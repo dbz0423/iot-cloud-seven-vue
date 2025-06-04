@@ -30,13 +30,14 @@ export const usePermissionStore = defineStore('permission', {
   actions: {
     // getAuthButtonList
     async getAuthButtonList() {
+      console.log('vvvvvvvvvvvvvv')
+
       const { data } = await getAuthButtonListApi()
       this.buttonList = data
     },
     // getAuthMenuList
     async getAuthMenuList() {
       const { data } = await getAuthMenuListApi()
-      console.log(data)
       this.menuList = getParseMenuArr(data)
       this.homePath = this.menuList[0]?.path
     },

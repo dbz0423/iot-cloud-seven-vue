@@ -23,6 +23,7 @@ export const logoutApi = () => {
 
 // * 获取按钮权限
 export const getAuthButtonListApi = () => {
+  console.log('aaaaaaaaaaa', http.post<string[]>(_API + '/sys/menu/button', {}, { headers: { noLoading: true } }))
   return http.post<string[]>(_API + '/sys/menu/button', {}, { headers: { noLoading: true } })
 }
 

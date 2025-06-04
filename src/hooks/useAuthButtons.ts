@@ -17,6 +17,7 @@ export const useAuthButtons = () => {
   const BUTTONS = computed(() => {
     const permissionStore = usePermissionStoreWithOut()
     // 未获取接口数据前，设为空对象，否则报错
+    console.log('bbbbbbbbbb', nowKey.value)
     return permissionStore.getAuthButtonList[nowKey.value] || {}
   })
 
