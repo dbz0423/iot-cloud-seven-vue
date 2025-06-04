@@ -1,14 +1,13 @@
 import { SysMenu } from '@/api/interface/index'
 import http from '@/api'
 import { _API } from '@/api/axios/servicePort'
-import { log } from 'console'
 
 /**
  * @name 菜单模块
  */
 // * 菜单列表
 export const getMenuList = (params: { type: String }) => {
-  log(params)
+  console.log('getMenuList', http.post<SysMenu.ResMenuList>(_API + '/sys/menu/list', params))
   return http.post<SysMenu.ResMenuList>(_API + '/sys/menu/list', params)
 }
 

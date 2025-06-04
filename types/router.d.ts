@@ -16,5 +16,6 @@ declare namespace Menu {
     isHide: boolean
     isAffix: boolean
     isKeepAlive: boolean
+    type?: string
   }
 }

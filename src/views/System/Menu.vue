@@ -4,7 +4,7 @@
       v-if="refreshTree"
       ref="proTable"
       title="菜单列表"
-      row-key="pkId"
+      row-key="id"
       :indent="30"
       :columns="columns"
       :request-api="getTableList"
@@ -46,7 +46,6 @@ import ProTable from '@/components/ProTable/index.vue'
 import MenuDialog from '@/views/System/components/MenuDialog.vue'
 import { CirclePlus, Delete, EditPen, View } from '@element-plus/icons-vue'
 import { getMenuList, addMenu, editMenu, removeMenu } from '@/api/modules/menu'
-import { useAuthButtons } from '@/hooks/useAuthButtons'
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
@@ -60,6 +59,8 @@ const initParam = reactive({})
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
+  const data = getMenuList(newParams)
+  console.log('getTableList', data)
   return getMenuList(newParams)
 }
 

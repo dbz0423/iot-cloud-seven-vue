@@ -47,6 +47,7 @@ const dataCallback = (data: any) => {
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
+  console.log('getManagerPage', getManagerPage(newParams))
   return getManagerPage(newParams)
 }
 
@@ -103,7 +104,7 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
 
 // 删除用户信息
 const deleteAccount = async (params: SysManager.ResManagerList) => {
-  await useHandleData(deleteManager, [params.pkId], `删除【${params.username}】用户`)
+  await useHandleData(deleteManager, [params.id], `删除【${params.username}】用户`)
   proTable.value.getTableList()
 }
 

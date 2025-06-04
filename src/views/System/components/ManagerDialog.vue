@@ -30,7 +30,7 @@
         </el-form-item>
         <el-form-item v-if="dialogProps.title !== '重置'" label="角色" prop="roleId">
           <el-select v-model="dialogProps.row!.roleId" filterable placeholder="请选择角色" class="w-full">
-            <el-option v-for="item in dialogProps.roleList" :key="item.pkId" :label="item.name" :value="item.pkId" class="isabel-option" />
+            <el-option v-for="item in dialogProps.roleList" :key="item.id" :label="item.name" :value="item.id" class="isabel-option" />
           </el-select>
         </el-form-item>
         <el-form-item v-if="dialogProps.title !== '重置'" label="状态" prop="status">

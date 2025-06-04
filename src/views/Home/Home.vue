@@ -1,6 +1,6 @@
 <template>
   <div class="home card">
-    <img class="home-bg" src="@/assets/images/welcome.png" alt="welcome" />
+    <img class="home-bg" src="https://dbz0423.oss-cn-nanjing.aliyuncs.com/welcome.png" alt="welcome" />
   </div>
 </template>
 
@@ -15,8 +15,8 @@
   height: 100%;
 
   .home-bg {
-    width: 70%;
-    margin-bottom: 20px;
+    width: 100%;
+    height: auto;
   }
 }
 </style>

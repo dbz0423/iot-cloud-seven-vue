@@ -1,4 +1,4 @@
-import { ResPage, SysRole, SysMenu } from '@/api/interface/index'
+import { ResPage, SysRole, SysMenu, RoleDetail } from '@/api/interface/index'
 import { _API } from '@/api/axios/servicePort'
 import http from '@/api'
 
@@ -33,6 +33,12 @@ export const deleteRole = (params: number[]) => {
 // * 角色表单菜单列表
 export const getRoleFormMenuList = (params?: {}) => {
   return http.post<SysMenu.ResMenuList[]>(_API + '/sys/role/menu', params, {
+    headers: { noLoading: true }
+  })
+}
+
+export const getRoleDetail = (params: { id: number }) => {
+  return http.post<RoleDetail>(_API + '/sys/role/detail', params, {
     headers: { noLoading: true }
   })
 }

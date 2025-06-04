@@ -25,7 +25,7 @@
             :props="defaultProps"
             show-checkbox
             default-expand-all
-            node-key="pkId"
+            node-key="id"
             :check-strictly="treeStrictly"
           />
         </el-form-item>
@@ -41,10 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { ElMessage, FormInstance } from 'element-plus'
 import { Dialog } from '@/components/Dialog'
-import { getRoleFormMenuList } from '@/api/modules/role'
+import { getRoleFormMenuList, getRoleDetail } from '@/api/modules/role'
 import type Node from 'element-plus/es/components/tree/src/model/node'
 import type { ElTree } from 'element-plus'
 
@@ -71,14 +71,31 @@ const dialogProps = ref<DialogProps>({
 
 // 接收父组件传过来的参数
 const treeStrictly = ref(true)
-const acceptParams = (params: DialogProps): void => {
+const acceptParams = async (params: DialogProps): void => {
   params.row = { ...dialogProps.value.row, ...params.row }
   dialogProps.value = { ...dialogProps.value, ...params }
   dialogVisible.value = true
-  setTimeout(() => {
-    treeStrictly.value = false
-  }, 200)
+
+  // 新增：如果是编辑操作，调用详情接口获取完整menuIds
+  if (['编辑', '查看'].includes(params.title) && params.row.id) {
+    const { data } = await getRoleDetail(params.row.id)
+    dialogProps.value.row = data // 覆盖为详情接口的完整数据
+    await getTreeMenuList()
+    treeRef.value?.setCheckedKeys(dialogProps.value.row.menuIds || [])
+  }
+  // 解决第一次打开时，树结构不显示的问题
+  treeStrictly.value = false
 }
+
+// 监听 menuIds 变化，更新勾选状态（可选）
+watch(
+  () => dialogProps.value.row.menuIds,
+  (newIds) => {
+    if (treeRef.value && newIds) {
+      treeRef.value.setCheckedKeys(newIds)
+    }
+  }
+)
 
 defineExpose({
   acceptParams
@@ -88,6 +105,7 @@ defineExpose({
 const getTreeMenuList = async () => {
   const { data } = await getRoleFormMenuList()
   dialogProps.value.treeMenuList = data
+  console.log('treeMenuList', dialogProps.value.treeMenuList)
 }
 await getTreeMenuList()
 
