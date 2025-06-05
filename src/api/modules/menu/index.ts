@@ -7,6 +7,7 @@ import { _API } from '@/api/axios/servicePort'
  */
 // * 菜单列表
 export const getMenuList = (params: { type: String }) => {
+  console.log('getMenuList', http.post<SysMenu.ResMenuList>(_API + '/sys/menu/list', params))
   return http.post<SysMenu.ResMenuList>(_API + '/sys/menu/list', params)
 }
 

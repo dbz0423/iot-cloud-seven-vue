@@ -28,7 +28,6 @@ import ManagerDialog from '@/views/System/components/ManagerDialog.vue'
 import { CirclePlus, Delete, EditPen, View } from '@element-plus/icons-vue'
 import { getManagerPage, addManager, editManager, deleteManager } from '@/api/modules/manager'
 import { getRoleList } from '@/api/modules/role'
-import { dictConfigList } from '@/api/modules/dict/dictConfig'
 
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
@@ -48,6 +47,7 @@ const dataCallback = (data: any) => {
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
+  console.log('getManagerPage', getManagerPage(newParams))
   return getManagerPage(newParams)
 }
 
@@ -72,20 +72,12 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
     search: { el: 'input' }
   },
   {
-    prop: 'gender',
-    label: '性别',
-    width: 80,
-    enum: () => dictConfigList('gender'),
-    fieldNames: { label: 'title', value: 'value' },
-    search: { el: 'select', props: { filterable: true } }
-  },
-  {
     prop: 'roleId',
     tag: true,
     label: '角色',
     enum: getRoleList,
     // search: { el: 'select', props: { filterable: true } },
-    fieldNames: { label: 'name', value: 'pkId' }
+    fieldNames: { label: 'name', value: 'id' }
   },
   {
     prop: 'status',
@@ -112,7 +104,7 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
 
 // 删除用户信息
 const deleteAccount = async (params: SysManager.ResManagerList) => {
-  await useHandleData(deleteManager, [params.pkId], `删除【${params.username}】用户`)
+  await useHandleData(deleteManager, [params.id], `删除【${params.username}】用户`)
   proTable.value.getTableList()
 }
 

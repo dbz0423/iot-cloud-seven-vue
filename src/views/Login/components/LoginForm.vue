@@ -74,7 +74,7 @@ const login = (formEl: FormInstance | undefined) => {
       push(permissionStore.homePath)
       ElNotification({
         title: getTimeState(),
-        message: '欢迎登录 share-admin',
+        message: '欢迎登录 智能物联网管理平台',
         type: 'success',
         duration: 3000
       })

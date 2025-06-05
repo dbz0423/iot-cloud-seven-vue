@@ -44,6 +44,8 @@ const dataCallback = (data: any) => {
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
+  console.log('getRolePage', getRolePage(newParams))
+  console.log('newParams', newParams)
   return getRolePage(newParams)
 }
 
@@ -69,7 +71,7 @@ const columns: ColumnProps[] = [
 
 // 删除单个
 const deleteRow = async (params: SysRole.ResRoleList) => {
-  await useHandleData(deleteRole, [params.pkId], `删除【${params.name}】角色`)
+  await useHandleData(deleteRole, [params.id], `删除【${params.name}】角色`)
   proTable.value.getTableList()
 }
 

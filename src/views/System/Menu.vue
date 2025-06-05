@@ -4,7 +4,7 @@
       v-if="refreshTree"
       ref="proTable"
       title="菜单列表"
-      row-key="pkId"
+      row-key="id"
       :indent="30"
       :columns="columns"
       :request-api="getTableList"
@@ -59,7 +59,8 @@ const initParam = reactive({})
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
-  console.log('newParams', newParams)
+  const data = getMenuList(newParams)
+  console.log('getTableList', data)
   return getMenuList(newParams)
 }
 

@@ -2,13 +2,12 @@
   <div class="login-container flx-center">
     <div class="login-box">
       <SwitchDark class="dark" />
-      <div class="login-left">
-        <img class="login-left-img" src="@/assets/images/login_left.png" alt="login" />
-      </div>
       <div class="login-form">
         <div class="login-logo">
-          <img class="login-icon" src="@/assets/images/logo.svg" alt="" />
-          <h2 class="logo-text"> 后台管理系统 </h2>
+          <div class="login-icon-box">
+            <img class="login-icon" src="@/assets/images/new-logo.png" />
+          </div>
+          <h2 class="logo-text"> 智能物联网管理平台 </h2>
         </div>
         <LoginForm />
       </div>

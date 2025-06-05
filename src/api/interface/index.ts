@@ -46,14 +46,14 @@ export namespace SysManager {
     username?: string
   }
   export interface ResManagerList {
-    pkId: number
+    id: number
     username: string
     avatar: string
     status: number
     createTime: string
   }
   export interface ReqEditManagerParams {
-    pkId?: number
+    id?: number
     username: string
     avatar: string
     status: number
@@ -73,7 +73,7 @@ export namespace SysRole {
     name?: string
   }
   export interface ResRoleList {
-    pkId: number
+    id: number
     name: string
     remark: string
     menuIds: number[]
@@ -95,21 +95,17 @@ export namespace SysMenu {
   }
   export interface ResMenuList {
     title: string
-    pkId: number
+    id: number
     pid: number
     path: string
     name: string
     icon: string
     component?: string
-    type: 'MENU_DIR' | 'MENU' | 'BUTTON'
-    openType: 'TAB' | 'URL'
-    url?: string
+    type: string
     auth?: string
-    keepalive: boolean
     sort: number
     parentName: String
     children: ResMenuList[]
-    hide?: boolean
   }
 }
 
@@ -136,4 +132,12 @@ export interface DictConfigRes {
   title: string
   updateTime: string
   value: number
+}
+
+export interface RoleDetail {
+  id: number
+  name: string
+  remark: string
+  menuIds: number[] // 关键字段：菜单权限 ID 数组
+  // 其他角色相关字段...
 }

@@ -188,6 +188,7 @@ export function getParseMenuArr(menuList: SysMenu.ResMenuList[]): Menu.MenuOptio
       meta: {
         icon: element.icon,
         title: element.title,
+        type: element.type ?? null, // 添加这行处理type字段
         isLink: element.openType === 'URL' ? element.url : undefined,
         isHide: element.hide ?? false,
         isAffix: false,
