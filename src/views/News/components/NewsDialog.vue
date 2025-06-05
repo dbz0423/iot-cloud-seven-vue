@@ -10,9 +10,6 @@
         :disabled="dialogProps.isView"
         :hide-required-asterisk="dialogProps.isView"
       >
-        <!-- <el-form-item label="编号" prop="id">
-          <el-input v-model="dialogProps.row!.id" placeholder="请填写编号" clearable :disabled="dialogProps.isView"></el-input>
-        </el-form-item> -->
         <el-form-item label="标题" prop="title">
           <el-input v-model="dialogProps.row!.title" placeholder="请填写标题" clearable></el-input>
         </el-form-item>
@@ -21,7 +18,6 @@
             <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :mode="mode"></Toolbar>
             <Editor v-model="dialogProps.row!.content" :defaultConfig="editorConfig" @on-created="handleCreated" :mode="mode" style="height: 500px; overflow-y: hidden"></Editor>
           </div>
-          <!-- <el-input v-model="dialogProps.row!.content" type="textarea" placeholder="请填写内容" clearable></el-input> -->
         </el-form-item>
         <el-form-item label="封面" prop="cover">
           <el-upload
@@ -35,11 +31,14 @@
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
+        <el-form-item label="点赞数" prop="support">
+          <el-input-number v-model="dialogProps.row!.support" placeholder="输入点赞数" :disabled="dialogProps.isView"></el-input-number>
+        </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker v-model="dialogProps.row!.createTime" type="datetime" placeholder="选择创建时间" :disabled="dialogProps.isView"></el-date-picker>
         </el-form-item>
         <el-form-item label="定时提交时间" prop="scheduledTime">
-          <el-date-picker v-model="dialogProps.row!.scheduledTime" type="datetime" placeholder="选择定时提交时间"></el-date-picker>
+          <el-date-picker v-model="dialogProps.row!.scheduledTime" type="datetime" placeholder="选择定时提交时间" clearable></el-date-picker>
         </el-form-item>
       </el-form>
     </div>
@@ -107,7 +106,7 @@ const dialogVisible = ref(false)
 const dialogProps = ref<DialogProps>({
   isView: false,
   title: '',
-  row: { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: new Date() },
+  row: { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: null },
   labelWidth: 160,
   fullscreen: true,
   maxHeight: '500px'
@@ -130,7 +129,7 @@ const rules = reactive({
   content: [{ required: true, message: '请填写内容', trigger: 'blur' }],
   cover: [{ required: true, message: '请上传封面', trigger: 'blur' }],
   createTime: [{ required: true, message: '请选择创建时间', trigger: 'blur' }],
-  scheduledTime: [{ required: true, message: '请选择定时提交时间', trigger: 'blur' }]
+  scheduledTime: [{ required: false }]
 })
 
 const ruleFormRef = ref<FormInstance>()
@@ -149,28 +148,36 @@ const beforeCoverUpload = (rawFile: File) => {
 }
 
 const handleSubmit = () => {
-  dialogVisible.value = false
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {
       const scheduledTime = dialogProps.value.row!.scheduledTime
       const now = new Date()
-      const diff = scheduledTime.getTime() - now.getTime()
 
-      if (diff <= 0) {
-        // 如果当前时间大于或等于选择的时间，立即提交
+      if (!scheduledTime) {
+        // 如果定时时间为空，立即提交
         await dialogProps.value.api!(dialogProps.value.row)
         ElMessage.success({ message: `${dialogProps.value.title}成功！` })
         dialogProps.value.getTableList!()
         cancelDialog(true)
       } else {
-        // 如果当前时间小于选择的时间，等待直到时间到
-        ElMessage.info({ message: `将在${diff / 1000}秒后提交表单`, duration: 3000 })
-        await new Promise((resolve) => setTimeout(resolve, diff))
-        await dialogProps.value.api!(dialogProps.value.row)
-        ElMessage.success({ message: `${dialogProps.value.title}成功！` })
-        dialogProps.value.getTableList!()
-        cancelDialog(true)
+        const diff = scheduledTime.getTime() - now.getTime()
+
+        if (diff <= 0) {
+          // 如果当前时间大于或等于选择的时间，立即提交
+          await dialogProps.value.api!(dialogProps.value.row)
+          ElMessage.success({ message: `${dialogProps.value.title}成功！` })
+          dialogProps.value.getTableList!()
+          cancelDialog(true)
+        } else {
+          // 如果当前时间小于选择的时间，等待直到时间到
+          ElMessage.info({ message: `将在${diff / 1000}秒后提交表单`, duration: 3000 })
+          await new Promise((resolve) => setTimeout(resolve, diff))
+          await dialogProps.value.api!(dialogProps.value.row)
+          ElMessage.success({ message: `${dialogProps.value.title}成功！` })
+          dialogProps.value.getTableList!()
+          cancelDialog(true)
+        }
       }
     } catch (error) {
       console.log(error)
@@ -182,7 +189,7 @@ const cancelDialog = (isClean?: boolean) => {
   dialogVisible.value = false
   let condition = ['查看', '编辑']
   if (condition.includes(dialogProps.value.title) || isClean) {
-    dialogProps.value.row = { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: new Date() }
+    dialogProps.value.row = { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: null }
     ruleFormRef.value!.resetFields()
   }
 }

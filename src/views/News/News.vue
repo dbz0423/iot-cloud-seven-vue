@@ -6,6 +6,7 @@
       <template #tableHeader>
         <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')">新增资讯</el-button>
         <el-button type="danger" :icon="Minus" @click="batchDelete()">删除资讯</el-button>
+        <el-button type="success" :icon="RefreshRight" @click="updateChange()">更新资讯</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
@@ -27,8 +28,8 @@ import { useHandleData } from '@/hooks/useHandleData'
 import ProTable from '@/components/ProTable/index.vue'
 import NewsDialog from './components/NewsDialog.vue'
 import ContentDialog from './components/ContentDialog.vue'
-import { CirclePlus, Delete, EditPen, View, Minus } from '@element-plus/icons-vue'
-import { getNewsPage, addNews, editNews, deleteNews } from '@/api/modules/news'
+import { CirclePlus, Delete, EditPen, View, Minus, RefreshRight } from '@element-plus/icons-vue'
+import { getNewsPage, addNews, editNews, deleteNews, getNews } from '@/api/modules/news'
 import { ElImage, ElButton, ElMessage, ElTag } from 'element-plus'
 import dayjs from 'dayjs'
 import { useSelection } from '@/hooks/useSelection'
@@ -39,9 +40,10 @@ const proTable = ref()
 // 如果表格需要初始化请求参数，直接定义传给 ProTable(之后每次请求都会自动带上该参数，此参数更改之后也会一直带上，改变此参数会自动刷新表格数据)
 const initParam = reactive({})
 
-// const testChange = () => {
-//   const res = getNews()
-// }
+const updateChange = () => {
+  const res = getNews()
+  console.log('更新信息' + res)
+}
 // dataCallback 是对于返回的表格数据做处理，如果你后台返回的数据不是 datalist && total 这些字段，那么你可以在这里进行处理成这些字段
 const dataCallback = (data: any) => {
   return {
