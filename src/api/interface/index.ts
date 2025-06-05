@@ -46,14 +46,14 @@ export namespace SysManager {
     username?: string
   }
   export interface ResManagerList {
-    id: number
+    pkId: number
     username: string
     avatar: string
     status: number
     createTime: string
   }
   export interface ReqEditManagerParams {
-    id?: number
+    pkId?: number
     username: string
     avatar: string
     status: number
@@ -73,7 +73,7 @@ export namespace SysRole {
     name?: string
   }
   export interface ResRoleList {
-    id: number
+    pkId: number
     name: string
     remark: string
     menuIds: number[]
@@ -87,6 +87,48 @@ export namespace SysRole {
   }
 }
 
+// * 资讯模块
+export namespace News {
+  export interface ReqGetNewsParams extends ReqPage {
+    title?: string
+  }
+  export interface ResNewsList {
+    id: number
+    title: string
+    content: string
+    img: string
+    createTime: string
+  }
+  export interface ReqEditNewsParams {
+    id: number
+    title: string
+    content: string
+    img: string
+  }
+}
+
+// * 租客模块
+export namespace Tenant {
+  export interface ReqGetTenantParams extends ReqPage {
+    name?: string
+  }
+  export interface ResTenantList {
+    id: number
+    name: string
+    type: number
+    img: string
+    status: number
+    createTime: string
+  }
+  export interface ReqEditTenantParams {
+    id?: number
+    name: string
+    type: number
+    img: string
+    status: number
+  }
+}
+
 // * 菜单模块
 export namespace SysMenu {
   export interface ReqLoginForm {
@@ -95,17 +137,21 @@ export namespace SysMenu {
   }
   export interface ResMenuList {
     title: string
-    id: number
+    pkId: number
     pid: number
     path: string
     name: string
     icon: string
     component?: string
-    type: string
+    type: 'MENU_DIR' | 'MENU' | 'BUTTON'
+    openType: 'TAB' | 'URL'
+    url?: string
     auth?: string
+    keepalive: boolean
     sort: number
     parentName: String
     children: ResMenuList[]
+    hide?: boolean
   }
 }
 
@@ -132,12 +178,4 @@ export interface DictConfigRes {
   title: string
   updateTime: string
   value: number
-}
-
-export interface RoleDetail {
-  id: number
-  name: string
-  remark: string
-  menuIds: number[] // 关键字段：菜单权限 ID 数组
-  // 其他角色相关字段...
 }
