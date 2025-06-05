@@ -12,8 +12,8 @@ export const useSelection = (selectId: string = 'id') => {
   const selectedList = ref([])
 
   // 当前选中的所有ids(数组)，可根据项目自行配置id字段
-  const selectedListIds = computed((): string[] => {
-    const ids: string[] = []
+  const selectedListIds = computed((): number[] => {
+    const ids: number[] = []
     selectedList.value.forEach((item) => {
       ids.push(item[selectId])
     })
