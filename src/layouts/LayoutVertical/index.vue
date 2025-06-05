@@ -4,8 +4,8 @@
     <el-aside>
       <div class="aside-box" :style="{ width: isCollapse ? '65px' : '210px' }">
         <div class="logo flx-center">
-          <img class="logo-img" src="@/assets/images/logo.jpg" alt="logo" />
-          <span class="logo-text" v-show="!isCollapse">资源共享平台</span>
+          <img class="logo-img" src="@/assets/images/new-logo.png" alt="logo" />
+          <span class="logo-text" v-show="!isCollapse">智能物联网管理平台</span>
         </div>
         <el-scrollbar>
           <el-menu :default-active="activeMenu" :collapse="isCollapse" :router="false" :unique-opened="true" :collapse-transition="false">
