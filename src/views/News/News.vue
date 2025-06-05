@@ -41,7 +41,6 @@ const initParam = reactive({})
 
 // const testChange = () => {
 //   const res = getNews()
-//   console.log(res)
 // }
 // dataCallback 是对于返回的表格数据做处理，如果你后台返回的数据不是 datalist && total 这些字段，那么你可以在这里进行处理成这些字段
 const dataCallback = (data: any) => {
