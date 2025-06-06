@@ -16,8 +16,8 @@ export const ProtocolApi = {
  * @name app版本管理
  */
 export const VersionApi = {
-  page: (params: any) => http.post(_API + '/appVersion/page', params),
-  add: (params: any) => http.post(_API + '/appVersion/add', params),
-  remove: (params: number[]) => http.post(_API + '/appVersion/remove', params),
-  edit: (params: any) => http.post(_API + '/appVersion/edit', params)
+  page: (params: any) => http.post(_API + '/version/page', params),
+  add: (params: any) => http.post(_API + '/version/add', params),
+  remove: (params: number[]) => http.post(_API + '/version/remove', params),
+  edit: (params: any) => http.post(_API + '/version/edit', params)
 }
