@@ -15,7 +15,6 @@
               {{ collapsed ? '展开' : '合并' }}
               <el-icon class="el-icon--right">
                 <component :is="collapsed ? ArrowDown : ArrowUp"></component>
-                666
               </el-icon>
             </el-button>
           </div>
