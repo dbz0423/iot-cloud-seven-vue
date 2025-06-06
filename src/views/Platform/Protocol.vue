@@ -3,7 +3,7 @@
     <ProTable ref="proTable" title="协议管理" :columns="columns" :requestApi="ProtocolApi.page" :initParam="initParam" :dataCallback="dataCallback">
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['pla:protocol:add']">新增</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['pla:protocol:add']">新增协议</el-button>
       </template>
 
       <template #operation="scope">
@@ -66,7 +66,7 @@ const columns: ColumnProps<any>[] = [
 
 // 删除数据
 const deleteRowData = async (params) => {
-  await useHandleData(ProtocolApi.remove, [params.pkId], `删除【${params.name}】`)
+  await useHandleData(ProtocolApi.remove, params.id, `删除【${params.name}】`)
   proTable.value.getTableList()
 }
 
