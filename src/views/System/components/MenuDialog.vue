@@ -12,14 +12,7 @@
       >
         <el-form-item label="上级菜单" prop="parentId">
           <el-select v-model="dialogProps.row!.parentId" filterable placeholder="请选择" class="w-full">
-            <el-option
-              v-for="item in dialogProps.menuList"
-              :key="item.pkId"
-              :label="item.title"
-              :value="item.pkId"
-              class="isabel-option"
-              :disabled="item.pkId == dialogProps.row!.pkId"
-            />
+            <el-option v-for="item in dialogProps.menuList" :key="item.id" :label="item.title" :value="item.id" class="isabel-option" :disabled="item.id == dialogProps.row!.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="菜单类型" prop="type">
