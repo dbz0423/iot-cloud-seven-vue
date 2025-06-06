@@ -5,8 +5,11 @@ import { _API } from '@/api/axios/servicePort'
  * @name 协议管理
  */
 export const ProtocolApi = {
-  edit: (params: { content: string; type: number }) => http.post(_API + '/privacy/edit', params),
-  info: (params: { type: number }) => http.post<protocolType>(_API + '/privacy/info', params)
+  page: (params: any) => http.post(_API + '/protocol/page', params),
+  add: (params: any) => http.post(_API + '/protocol/add', params),
+  edit: (params: any) => http.post(_API + '/protocol/edit', params),
+  remove: (params: number[]) => http.post(_API + '/protocol/remove', params),
+  info: (params: { type: number }) => http.post<protocolType>(_API + '/protocol/info', params)
 }
 
 /**
