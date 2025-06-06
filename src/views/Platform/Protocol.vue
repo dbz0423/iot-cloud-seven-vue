@@ -51,7 +51,6 @@ const columns: ColumnProps<any>[] = [
   {
     prop: 'content',
     label: '协议内容',
-    width: 600,
     render: (scope) => {
       return <div class="line-clamp-2" v-html={scope.row.content}></div>
     }

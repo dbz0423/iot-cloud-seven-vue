@@ -42,11 +42,10 @@ const dataCallback = (data: any) => {
 // 表格配置项
 const columns: ColumnProps<any>[] = [
   { type: 'selection', fixed: 'left', width: 60 },
-  { prop: 'versionNumber', label: '版本号' },
+  { prop: 'versionNumber', label: '版本号', width: 120, search: { el: 'input' } },
   {
     prop: 'description',
     label: '版本描述',
-    width: 600,
     render: (scope) => {
       return <div class="line-clamp-2" v-html={scope.row.description}></div>
     }

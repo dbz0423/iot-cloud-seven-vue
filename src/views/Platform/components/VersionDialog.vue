@@ -58,6 +58,10 @@ const dialogProps = ref<DialogProps>({
 
 // 接收父组件传过来的参数
 const acceptParams = (params: DialogProps): void => {
+  // 处理发布时间格式
+  if (params.row?.releaseTime) {
+    params.row.releaseTime = new Date(params.row.releaseTime)
+  }
   params.row = { ...dialogProps.value.row, ...params.row }
   dialogProps.value = { ...dialogProps.value, ...params }
   dialogVisible.value = true
