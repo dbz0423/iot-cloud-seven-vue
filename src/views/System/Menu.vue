@@ -93,7 +93,7 @@ const columns: ColumnProps<SysMenu.ResMenuList>[] = [
     }
   },
   { prop: 'icon', label: '菜单图标', width: 120 },
-  { prop: 'name', label: '菜单 name' },
+  { prop: 'name', label: '菜单英文名称' },
   { prop: 'path', label: '路由路径', width: 200 },
   { prop: 'component', label: '组件路径', width: 200 },
   { prop: 'auth', label: '授权标识', width: 150 },
@@ -103,7 +103,7 @@ const columns: ColumnProps<SysMenu.ResMenuList>[] = [
 
 // 删除用户信息
 const deleteMenu = async (params: SysMenu.ResMenuList) => {
-  await useHandleData(removeMenu, { id: params.pkId }, `删除【${params.title}】菜单`)
+  await useHandleData(removeMenu, { id: params.id }, `删除【${params.title}】菜单`)
   proTable.value.getTableList()
 }
 
