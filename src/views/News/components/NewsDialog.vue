@@ -14,7 +14,8 @@
           <el-input v-model="dialogProps.row!.title" placeholder="请填写标题" clearable></el-input>
         </el-form-item>
         <el-form-item label="内容" prop="content">
-          <div style="border: 1px solid #ccc; width: 100%">
+          <div v-if="dialogProps.title == '查看'" class="preview-content" v-html="dialogProps.row!.content"></div>
+          <div style="border: 1px solid #ccc; width: 100%" v-else>
             <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :mode="mode"></Toolbar>
             <Editor v-model="dialogProps.row!.content" :defaultConfig="editorConfig" @on-created="handleCreated" :mode="mode" style="height: 500px; overflow-y: hidden"></Editor>
           </div>
@@ -194,3 +195,14 @@ const cancelDialog = (isClean?: boolean) => {
   }
 }
 </script>
+
+<style scoped>
+.preview-content {
+  border: 2px solid #f5f7fa;
+  border-radius: 5px;
+  background-color: #f5f7fa;
+  width: 100%;
+  padding: 16px;
+  line-height: 1.6;
+}
+</style>

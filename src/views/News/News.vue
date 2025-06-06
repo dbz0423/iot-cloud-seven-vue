@@ -16,7 +16,6 @@
       </template>
     </ProTable>
     <NewsDialog ref="dialogRef" />
-    <ContentDialog ref="contentRef" />
   </div>
 </template>
 
@@ -27,7 +26,6 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import { useHandleData } from '@/hooks/useHandleData'
 import ProTable from '@/components/ProTable/index.vue'
 import NewsDialog from './components/NewsDialog.vue'
-import ContentDialog from './components/ContentDialog.vue'
 import { CirclePlus, Delete, EditPen, View, Minus, RefreshRight } from '@element-plus/icons-vue'
 import { getNewsPage, addNews, editNews, deleteNews, getNews } from '@/api/modules/news'
 import { ElImage, ElButton, ElMessage, ElTag } from 'element-plus'
@@ -87,14 +85,6 @@ const columns: ColumnProps[] = [
     search: { el: 'input' }
   },
   {
-    prop: 'content',
-    label: '内容',
-    width: 112,
-    render: (scope) => {
-      return h(ElButton, { type: 'primary', onClick: () => openContentDialog(scope.row) }, { default: () => '查看内容' })
-    }
-  },
-  {
     prop: 'top',
     label: '置顶',
     render: (scope) => {
@@ -132,16 +122,6 @@ const columns: ColumnProps[] = [
   },
   { prop: 'operation', label: '操作', fixed: 'right', width: 300 }
 ]
-
-// 添加对话框显示方法
-const openContentDialog = (row: any) => {
-  contentRef.value.acceptParams({
-    title: '内容详情',
-    row: { content: row.content },
-    isView: true
-  })
-}
-
 // 删除单个
 const deleteRow = async (params: News.ResNewsList) => {
   await useHandleData(deleteNews, [params.id], `删除【${params.title}资讯`)
@@ -150,7 +130,6 @@ const deleteRow = async (params: News.ResNewsList) => {
 
 // 打开 drawer(新增、查看、编辑)
 const dialogRef = ref()
-const contentRef = ref()
 const openDrawer = (title: string, row: Partial<News.ResNewsList> = {}) => {
   let params = {
     title,
