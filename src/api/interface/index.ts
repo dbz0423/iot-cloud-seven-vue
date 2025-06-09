@@ -44,6 +44,7 @@ export namespace Login {
 export namespace SysManager {
   export interface ReqGetManagerParams extends ReqPage {
     username?: string
+    tenantId?: number
   }
   export interface ResManagerList {
     pkId: number
@@ -59,6 +60,8 @@ export namespace SysManager {
     status: number
     roleId: number
     password?: string
+    type: number
+    tenantId?: number
   }
 
   export interface ReqEditPasswordParams {
@@ -90,6 +93,7 @@ export namespace SysRole {
 // * 资讯模块
 export namespace News {
   export interface ReqGetNewsParams extends ReqPage {
+    tenantId?: number
     title?: string
   }
   export interface ResNewsList {
@@ -98,16 +102,18 @@ export namespace News {
     content: string
     img: string
     createTime: string
+    tenantId?: number
   }
   export interface ReqEditNewsParams {
     id: number
     title: string
     content: string
+    tenantId?: number
     img: string
   }
 }
 
-// * 租客模块
+// * 租户模块
 export namespace Tenant {
   export interface ReqGetTenantParams extends ReqPage {
     name?: string

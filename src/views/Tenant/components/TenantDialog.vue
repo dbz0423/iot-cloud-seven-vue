@@ -13,8 +13,8 @@
         <!-- <el-form-item label="编号" prop="id">
           <el-input v-model="dialogProps.row!.id" placeholder="请填写编号" clearable :disabled="dialogProps.isView"></el-input>
         </el-form-item> -->
-        <el-form-item label="租客名称" prop="name">
-          <el-input v-model="dialogProps.row!.name" placeholder="请填写租客名称" clearable></el-input>
+        <el-form-item label="租户名称" prop="name">
+          <el-input v-model="dialogProps.row!.name" placeholder="请填写租户名称" clearable></el-input>
         </el-form-item>
         <el-form-item label="类型" prop="type">
           <el-select v-model="dialogProps.row!.type" filterable placeholder="请选择" class="w-full">
@@ -89,7 +89,7 @@ defineExpose({
 
 const rules = reactive({
   id: [{ required: true, message: '请填写编号', trigger: 'blur' }],
-  name: [{ required: true, message: '请填写租客名称', trigger: 'blur' }],
+  name: [{ required: true, message: '请填写租户名称', trigger: 'blur' }],
   type: [{ required: true, message: '请选择类型', trigger: 'change' }],
   avatar: [{ required: true, message: '请上传头像', trigger: 'blur' }],
   createTime: [{ required: true, message: '请选择创建时间', trigger: 'blur' }]
