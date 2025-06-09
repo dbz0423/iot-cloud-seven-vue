@@ -13,6 +13,9 @@
         <el-form-item label="用户名" prop="nickname">
           <el-input v-model="dialogProps.row!.nickname" placeholder="" clearable></el-input>
         </el-form-item>
+        <el-form-item v-if="dialogProps.title !== '新增'" label="账号" prop="username">
+          <el-input v-model="dialogProps.row!.username" placeholder="" clearable></el-input>
+        </el-form-item>
         <el-form-item label="用户头像" prop="avatar">
           <UploadImg v-model:image-url="dialogProps.row!.avatar" width="135px" height="135px" :file-size="5">
             <template #empty>
@@ -24,6 +27,9 @@
         </el-form-item>
         <el-form-item label="手机号" prop="mobile">
           <el-input v-model="dialogProps.row!.mobile" placeholder="" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="对应租户" prop="tenantName">
+          <el-input v-model="dialogProps.tenantName" placeholder="租户" class="w-full"> </el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -41,6 +47,7 @@ import { ref, reactive } from 'vue'
 import { ElMessage, FormInstance } from 'element-plus'
 import { Dialog } from '@/components/Dialog'
 import UploadImg from '@/components/Upload/Img.vue'
+import { useAppStoreWithOut } from '@/store/modules/app'
 
 interface DialogProps {
   title: string
@@ -51,6 +58,9 @@ interface DialogProps {
   maxHeight?: number | string
   api?: (params: any) => Promise<any>
   getTableList?: () => Promise<any>
+  tenantId: number
+  tenantName: string
+  username: string
 }
 
 const dialogVisible = ref(false)
@@ -61,13 +71,17 @@ const dialogProps = ref<DialogProps>({
   row: {},
   labelWidth: 160,
   fullscreen: true,
-  maxHeight: '500px'
+  maxHeight: '500px',
+  tenantId: 0,
+  tenantName: '',
+  username: ''
 })
-
+const appStore = useAppStoreWithOut()
 // 接收父组件传过来的参数
 const acceptParams = (params: DialogProps): void => {
   params.row = { ...dialogProps.value.row, ...params.row }
-  dialogProps.value = { ...dialogProps.value, ...params }
+  dialogProps.value = { ...dialogProps.value, ...params, tenantId: appStore.userInfo.tenantId, tenantName: appStore.userInfo.tenantName }
+  // console.log('dialogProps', dialogProps.value)
   dialogVisible.value = true
 }
 
@@ -77,7 +91,7 @@ defineExpose({
 
 const rules = reactive({
   nickname: [
-    { required: true, message: '请输入账号', trigger: 'blur' },
+    { required: true, message: '请输入昵称', trigger: 'blur' },
     {
       min: 2,
       max: 20,
@@ -101,11 +115,13 @@ const handleSubmit = () => {
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {
-      console.log('dialogPropsaaaaaaaaaaaa', dialogProps.value.api)
-      console.log('dialogPropsbbbbbbbbbbbb', dialogProps.value.row)
-
-      await dialogProps.value.api!(dialogProps.value.row)
-      console.log('dialogProps', dialogProps.value)
+      // console.log('dialogPropsaaaaaaaaaaaa', dialogProps.value.api)
+      const params = {
+        ...dialogProps.value.row,
+        tenantId: dialogProps.value.tenantId
+      }
+      console.log('dialogPropsbbbbbbbbbbbb', params)
+      await dialogProps.value.api!(params)
       ElMessage.success({ message: `${dialogProps.value.title}成功！` })
       dialogProps.value.getTableList!()
       dialogVisible.value = false

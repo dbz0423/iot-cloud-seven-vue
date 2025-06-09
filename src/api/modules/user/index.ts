@@ -10,6 +10,10 @@ export const UserApi = {
     // console.log('params', params)
     return http.post(_API + '/user/page', params)
   },
+  // 新增用户
+  add: (params: any) => {
+    http.post(_API + '/user/add', params)
+  },
   // 编辑用户
   edit: (params: any) => http.post(_API + '/user/edit', params),
   // 导出用户列表

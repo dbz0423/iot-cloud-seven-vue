@@ -14,7 +14,7 @@
     >
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
+        <el-button type="primary" plain :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['sys:user:add']">新增用户</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
@@ -32,11 +32,10 @@ import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import UserDialog from './components/UserDialog.vue'
-import { Download, View, EditPen, Delete } from '@element-plus/icons-vue'
+import { CirclePlus, View, EditPen, Delete } from '@element-plus/icons-vue'
 import { UserApi } from '@/api/modules/user'
-import { ElMessageBox } from 'element-plus'
-import { useDownload } from '@/hooks/useDownload'
 import { useHandleData } from '@/hooks/useHandleData'
+import { useAppStoreWithOut } from '@/store/modules/app'
 // import { useDate } from '@/hooks/useDate'
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
@@ -51,16 +50,15 @@ const dataCallback = (data: any) => {
   }
 }
 
+const appstore = useAppStoreWithOut()
+
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
-  // console.log(
-  //   '数据',
-  //   UserApi.page(params).then((res) => {
-  //     console.log(res)
-  //   })
-  // )
-
-  return UserApi.page(params)
+  const newParams = {
+    ...params,
+    tenantId: appstore.userInfo.tenantId
+  }
+  return UserApi.page(newParams)
 }
 
 // 表格配置项
@@ -127,11 +125,14 @@ const openDrawer = (title: string, row: Partial<UserType> = {}) => {
     title,
     row: { ...row },
     isView: title === '查看',
-    api: title === '编辑' ? UserApi.edit : '',
+    api: title === '新增' ? UserApi.add : title === '编辑' ? UserApi.edit : '',
     getTableList: proTable.value.getTableList,
     maxHeight: '500px'
   }
   switch (title) {
+    case '新增':
+      dialogRef.value.acceptParams(params)
+      break
     case '查看':
       dialogRef.value.acceptParams(params)
       break
@@ -141,11 +142,6 @@ const openDrawer = (title: string, row: Partial<UserType> = {}) => {
     default:
       break
   }
-}
-
-// 导出列表
-const downloadFile = async () => {
-  ElMessageBox.confirm('确认导出用户数据?', '温馨提示', { type: 'warning' }).then(() => useDownload(UserApi.export, '用户列表', proTable.value?.searchParam))
 }
 
 // 删除用户信息
