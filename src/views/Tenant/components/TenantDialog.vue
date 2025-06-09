@@ -127,7 +127,7 @@ const cancelDialog = (isClean?: boolean) => {
   dialogVisible.value = false
   let condition = ['查看', '编辑']
   if (condition.includes(dialogProps.value.title) || isClean) {
-    dialogProps.value.row = { id: '', name: '', type: 'PERSONAL', avatar: '', createTime: new Date() }
+    dialogProps.value.row = { id: '', name: '', type: '', avatar: '', createTime: new Date() }
     ruleFormRef.value!.resetFields()
   }
 }

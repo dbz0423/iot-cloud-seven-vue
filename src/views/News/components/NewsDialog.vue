@@ -20,7 +20,7 @@
             <Editor v-model="dialogProps.row!.content" :defaultConfig="editorConfig" @on-created="handleCreated" :mode="mode" style="height: 500px; overflow-y: hidden"></Editor>
           </div>
         </el-form-item>
-        <el-form-item label="封面" prop="cover">
+        <!-- <el-form-item label="封面" prop="cover">
           <el-upload
             class="avatar-uploader"
             action="http://localhost:8181/share-admin-api/common/upload/img"
@@ -30,6 +30,19 @@
           >
             <img v-if="dialogProps.row!.cover" :src="dialogProps.row!.cover" class="avatar" />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
+        </el-form-item> -->
+        <el-form-item label="视频" prop="video">
+          <el-upload
+            class="video-uploader"
+            action="http://localhost:8181/share-admin-api/common/upload/video"
+            :show-file-list="false"
+            :on-success="handleVideoSuccess"
+            :before-upload="beforeVideoUpload"
+            :on-error="handleVideoError"
+          >
+            <video v-if="dialogProps.row!.video" :src="dialogProps.row!.video" class="video-preview" controls></video>
+            <el-icon v-else class="video-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
         <el-form-item label="点赞数" prop="support">
@@ -91,6 +104,20 @@ editorConfig.MENU_CONF['uploadImage'] = {
     insertFn(res.data.fileUrl, '', '')
   }
 }
+// 视频上传配置
+editorConfig.MENU_CONF['uploadVideo'] = {
+  server: baseUrl + '/share-admin-api/common/upload/video',
+  fieldName: 'file',
+  maxFileSize: 50 * 1024 * 1024, // 50M
+  allowedFileTypes: ['video/*'],
+  timeout: 300 * 1000, // 5分钟
+  onSuccess(file: File, res: any) {
+    return res.data.videoUrl
+  },
+  customInsert(res: any, insertFn: any) {
+    insertFn(res.data.videoUrl, '', '')
+  }
+}
 // 组件销毁时，也及时销毁编辑器，否则可能会造成内存泄漏
 onBeforeUnmount(() => {
   const editor = editorRef.value
@@ -107,7 +134,7 @@ const dialogVisible = ref(false)
 const dialogProps = ref<DialogProps>({
   isView: false,
   title: '',
-  row: { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: null },
+  row: { id: '', title: '', content: '', cover: '', video: '', createTime: new Date(), scheduledTime: null },
   labelWidth: 160,
   fullscreen: true,
   maxHeight: '500px'
@@ -135,17 +162,35 @@ const rules = reactive({
 
 const ruleFormRef = ref<FormInstance>()
 
-const handleCoverSuccess = (res) => {
+// const handleCoverSuccess = (res) => {
+//   console.log(res)
+//   dialogProps.value.row!.cover = res.data.fileUrl
+// }
+
+// const beforeCoverUpload = (rawFile: File) => {
+//   if (rawFile.size / 1024 / 1024 > 2) {
+//     ElMessage.error('封面大小不能超过2MB!')
+//     return false
+//   }
+//   return true
+// }
+
+const handleVideoSuccess = (res) => {
   console.log(res)
-  dialogProps.value.row!.cover = res.data.fileUrl
+  dialogProps.value.row!.video = res.data.videoUrl
 }
 
-const beforeCoverUpload = (rawFile: File) => {
-  if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('封面大小不能超过2MB!')
+const beforeVideoUpload = (rawFile: File) => {
+  if (rawFile.size / 1024 / 1024 > 50) {
+    ElMessage.error('视频大小不能超过50MB!')
     return false
   }
   return true
+}
+
+const handleVideoError = (err) => {
+  console.error(err)
+  ElMessage.error('视频上传失败')
 }
 
 const handleSubmit = () => {
@@ -190,7 +235,7 @@ const cancelDialog = (isClean?: boolean) => {
   dialogVisible.value = false
   let condition = ['查看', '编辑']
   if (condition.includes(dialogProps.value.title) || isClean) {
-    dialogProps.value.row = { id: '', title: '', content: '', cover: '', createTime: new Date(), scheduledTime: null }
+    dialogProps.value.row = { id: '', title: '', content: '', cover: '', video: '', createTime: new Date(), scheduledTime: null }
     ruleFormRef.value!.resetFields()
   }
 }
@@ -204,5 +249,18 @@ const cancelDialog = (isClean?: boolean) => {
   width: 100%;
   padding: 16px;
   line-height: 1.6;
+}
+
+.video-preview {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.video-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  line-height: 200px;
+  text-align: center;
 }
 </style>

@@ -3,13 +3,13 @@
     <ProTable ref="proTable" title="资讯列表" :columns="columns" :requestApi="getTableList" :initParam="initParam" :dataCallback="dataCallback">
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['sys:role:add']">新增租户</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['tenant:manager:add']">新增角色</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="success" :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['sys:role:view']">查看</el-button>
-        <el-button type="primary" :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['sys:role:edit']">编辑</el-button>
-        <el-button type="danger" :icon="Delete" @click="deleteRow(scope.row)" v-hasPermi="['sys:role:remove']">删除</el-button>
+        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['tenant:manager:view']">查看</el-button>
+        <el-button type="warning" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['tenant:manager:edit']">编辑</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteRow(scope.row)" v-hasPermi="['tenant:manager:remove']">删除</el-button>
       </template>
     </ProTable>
     <TenantDialog ref="dialogRef" />

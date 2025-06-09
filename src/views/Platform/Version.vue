@@ -3,13 +3,13 @@
     <ProTable ref="proTable" title="版本管理" :columns="columns" :requestApi="VersionApi.page" :initParam="initParam" :dataCallback="dataCallback">
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['platform:version:add']">新增</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['pla:version:add']">更新版本</el-button>
       </template>
 
       <template #operation="scope">
-        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['platform:version:view']">查看</el-button>
-        <el-button type="warning" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['platform:version:edit']">编辑</el-button>
-        <el-button type="danger" link :icon="Delete" @click="deleteRowData(scope.row)" v-hasPermi="['platform:version:remove']">删除</el-button>
+        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['pla:version:view']">查看</el-button>
+        <el-button type="warning" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['pla:version:edit']">编辑</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteRowData(scope.row)" v-hasPermi="['pla:version:remove']">删除</el-button>
       </template>
     </ProTable>
     <VersionDialog ref="dialogRef" />
@@ -42,21 +42,17 @@ const dataCallback = (data: any) => {
 // 表格配置项
 const columns: ColumnProps<any>[] = [
   { type: 'selection', fixed: 'left', width: 60 },
-  { prop: 'platform', label: '平台' },
-  { prop: 'summary', label: '简介', width: 200 },
-  { prop: 'maxVersion', label: '最大版本' },
-  { prop: 'minVersion', label: '最小版本' },
+  { prop: 'versionNumber', label: '版本号', width: 120, search: { el: 'input' } },
   {
-    prop: 'url',
-    label: '更新地址',
-    width: 200,
+    prop: 'description',
+    label: '版本描述',
     render: (scope) => {
-      return <el-link type="primary">{scope.row.url}</el-link>
+      return <div class="line-clamp-2" v-html={scope.row.description}></div>
     }
   },
   {
-    prop: 'createTime',
-    label: '创建时间',
+    prop: 'releaseTime',
+    label: '发布时间',
     width: 200
   },
   { prop: 'operation', label: '操作', fixed: 'right', width: 230 }
@@ -64,7 +60,7 @@ const columns: ColumnProps<any>[] = [
 
 // 删除数据
 const deleteRowData = async (params) => {
-  await useHandleData(VersionApi.remove, [params.pkId], `删除【${params.name}】`)
+  await useHandleData(VersionApi.remove, params.id, `删除【${params.versionNumber}】`)
   proTable.value.getTableList()
 }
 

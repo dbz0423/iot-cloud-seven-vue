@@ -10,24 +10,14 @@
         :disabled="dialogProps.isView"
         :hide-required-asterisk="dialogProps.isView"
       >
-        <el-form-item label="平台" prop="platform">
-          <el-radio-group v-model="dialogProps.row!.platform">
-            <el-radio label="ios">ios</el-radio>
-            <el-radio label="安卓">安卓</el-radio>
-            <el-radio label="mp">微信小程序</el-radio>
-          </el-radio-group>
+        <el-form-item label="版本号" prop="versionNumber">
+          <el-input v-model="dialogProps.row!.versionNumber" placeholder="请输入版本号" clearable></el-input>
         </el-form-item>
-        <el-form-item label="简介" prop="summary">
-          <el-input v-model="dialogProps.row!.summary" placeholder="请填写版本简介" clearable></el-input>
+        <el-form-item label="版本描述" prop="description">
+          <WangEditor v-model:value="dialogProps.row!.description" height="300px" />
         </el-form-item>
-        <el-form-item label="最大版本" prop="maxVersion">
-          <el-input v-model="dialogProps.row!.maxVersion" placeholder="请填写最大版本" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="最小版本" prop="minVersion">
-          <el-input v-model="dialogProps.row!.minVersion" placeholder="请填写最小版本" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="更新地址" prop="url">
-          <el-input v-model="dialogProps.row!.url" placeholder="请填写更新地址" clearable></el-input>
+        <el-form-item label="发布时间" prop="releaseTime">
+          <el-date-picker v-model="dialogProps.row!.releaseTime" type="datetime" placeholder="请选择发布时间" clearable></el-date-picker>
         </el-form-item>
       </el-form>
     </div>
@@ -44,6 +34,7 @@
 import { ref, reactive } from 'vue'
 import { ElMessage, FormInstance } from 'element-plus'
 import { Dialog } from '@/components/Dialog'
+import WangEditor from '@/components/WangEditor/index.vue'
 
 interface DialogProps {
   title: string
@@ -67,6 +58,10 @@ const dialogProps = ref<DialogProps>({
 
 // 接收父组件传过来的参数
 const acceptParams = (params: DialogProps): void => {
+  // 处理发布时间格式
+  if (params.row?.releaseTime) {
+    params.row.releaseTime = new Date(params.row.releaseTime)
+  }
   params.row = { ...dialogProps.value.row, ...params.row }
   dialogProps.value = { ...dialogProps.value, ...params }
   dialogVisible.value = true
@@ -76,11 +71,9 @@ defineExpose({
   acceptParams
 })
 const rules = reactive({
-  platform: [{ required: true, message: '请选择平台', trigger: 'blur' }],
-  summary: [{ required: true, message: '简介不能为空', trigger: 'blur' }],
-  maxVersion: [{ required: true, message: '请输入最大版本', trigger: 'blur' }],
-  minVersion: [{ required: true, message: '请输入最小版本', trigger: 'blur' }],
-  url: [{ required: true, message: '更新地址不能为空', trigger: 'blur' }]
+  versionNumber: [{ required: true, message: '请输入版本号', trigger: 'blur' }],
+  description: [{ required: true, message: '请输入版本描述', trigger: 'blur' }],
+  releaseTime: [{ required: true, message: '请选择发布时间', trigger: 'blur' }]
 })
 const ruleFormRef = ref<FormInstance>()
 
@@ -88,8 +81,6 @@ const handleSubmit = () => {
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {
-      delete dialogProps.value.row['updateTime']
-      delete dialogProps.value.row['createTime']
       await dialogProps.value.api!(dialogProps.value.row)
       ElMessage.success({ message: `${dialogProps.value.title}成功！` })
       dialogProps.value.getTableList!()
