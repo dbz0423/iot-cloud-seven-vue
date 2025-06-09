@@ -5,15 +5,13 @@ declare interface UserType {
   account: string
   nickname: string
   avatar?: any
-  phone: string
-  gender: number
-  birthday: string
-  bonus: number
+  mobile: string
+  username: string
   remark: string
   deleteFlag: number
   createTime?: string
   updateTime?: string
-  enabled: number
+  status: number
 }
 
 /** 用户分页请求参数信息 */

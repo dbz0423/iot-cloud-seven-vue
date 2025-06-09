@@ -22,11 +22,8 @@
             <template #tip> 头像大小不能超过 5M </template>
           </UploadImg>
         </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-          <el-input v-model="dialogProps.row!.phone" placeholder="" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="生日" prop="birthday">
-          <el-date-picker v-model="dialogProps.row!.birthday" type="date" placeholder="选择日期" clearable></el-date-picker>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="dialogProps.row!.mobile" placeholder="" clearable></el-input>
         </el-form-item>
       </el-form>
     </div>
@@ -83,8 +80,8 @@ const rules = reactive({
     { required: true, message: '请输入账号', trigger: 'blur' },
     {
       min: 2,
-      max: 10,
-      message: '长度在 2 到 10 个字符',
+      max: 20,
+      message: '长度在 2 到 20 个字符',
       trigger: 'blur'
     }
   ],
@@ -96,21 +93,7 @@ const rules = reactive({
       trigger: 'blur'
     }
   ],
-  avatar: [{ required: true, message: '请上传头像', trigger: 'blur' }],
-  gender: [
-    {
-      required: true,
-      message: '请选择性别',
-      trigger: 'change'
-    }
-  ],
-  birthday: [
-    {
-      required: true,
-      message: '请选择生日',
-      trigger: 'change'
-    }
-  ]
+  avatar: [{ required: true, message: '请上传头像', trigger: 'blur' }]
 })
 const ruleFormRef = ref<FormInstance>()
 
@@ -118,15 +101,11 @@ const handleSubmit = () => {
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {
-      // 将生日从Date类型转换为字符串
-      const date = new Date(dialogProps.value.row.birthday)
-      const year = date.getFullYear()
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const day = String(date.getDate()).padStart(2, '0')
-      const formattedDate = `${year}-${month}-${day}`
-      dialogProps.value.row.birthday = formattedDate
+      console.log('dialogPropsaaaaaaaaaaaa', dialogProps.value.api)
+      console.log('dialogPropsbbbbbbbbbbbb', dialogProps.value.row)
 
       await dialogProps.value.api!(dialogProps.value.row)
+      console.log('dialogProps', dialogProps.value)
       ElMessage.success({ message: `${dialogProps.value.title}成功！` })
       dialogProps.value.getTableList!()
       dialogVisible.value = false

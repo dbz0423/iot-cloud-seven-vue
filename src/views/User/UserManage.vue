@@ -20,8 +20,7 @@
       <template #operation="scope">
         <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['sys:user:view']">查看</el-button>
         <el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['sys:user:edit']">编辑</el-button>
-        <el-button type="primary" link :icon="Key" @click="actionUser('冻结', scope.row)" v-if="scope.row.enabled === 1" v-hasPermi="['sys:user:freeze']">冻结用户</el-button>
-        <el-button type="primary" link :icon="Key" @click="actionUser('启用', scope.row)" v-else v-hasPermi="['sys:user:freeze']">启用用户</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteAccount(scope.row)" v-hasPermi="['sys:manager:remove']">删除</el-button>
       </template>
     </ProTable>
     <UserDialog ref="dialogRef" />
@@ -33,10 +32,11 @@ import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import UserDialog from './components/UserDialog.vue'
-import { Download, View, EditPen, Key } from '@element-plus/icons-vue'
+import { Download, View, EditPen, Delete } from '@element-plus/icons-vue'
 import { UserApi } from '@/api/modules/user'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 import { useDownload } from '@/hooks/useDownload'
+import { useHandleData } from '@/hooks/useHandleData'
 // import { useDate } from '@/hooks/useDate'
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
@@ -53,16 +53,23 @@ const dataCallback = (data: any) => {
 
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
+  // console.log(
+  //   '数据',
+  //   UserApi.page(params).then((res) => {
+  //     console.log(res)
+  //   })
+  // )
+
   return UserApi.page(params)
 }
 
 // 表格配置项
 const columns: ColumnProps<UserType>[] = [
-  { type: 'selection', fixed: 'left', width: 60 },
+  { type: 'selection', fixed: 'left', width: 50 },
   {
     prop: 'avatar',
     label: '头像',
-    width: 70,
+    width: 170,
     render: (scope) => {
       return (
         <div class={['flex', 'justify-center', 'p-1']}>
@@ -75,38 +82,39 @@ const columns: ColumnProps<UserType>[] = [
     prop: 'nickname',
     showOverflowTooltip: true,
     label: '用户名',
-    width: 100,
+    width: 170,
     search: {
       el: 'input',
       props: { placeholder: '请输入用户名' }
     }
   },
   {
-    prop: 'phone',
+    prop: 'username',
+    showOverflowTooltip: true,
+    label: '账号',
+    width: 170
+  },
+  {
+    prop: 'mobile',
     label: '手机号',
     search: {
       el: 'input',
       props: { placeholder: '请输入手机号' }
     },
-    width: 120
-  },
-  { prop: 'bonus', label: '积分', width: 120, sortable: true },
-  {
-    prop: 'birthday',
-    label: '生日'
+    width: 200
   },
   {
-    prop: 'enabled',
+    prop: 'status',
     label: '状态',
-    width: 100,
+    width: 200,
     render: (scope) => {
-      return <el-tag type={scope.row.enabled === 0 ? 'warning' : 'primary'}>{scope.row.enabled === 0 ? '禁用' : '启用'}</el-tag>
+      return <el-tag type={scope.row.status === 0 ? 'warning' : 'primary'}>{scope.row.status === 0 ? '禁用' : '启用'}</el-tag>
     }
   },
   {
     prop: 'createTime',
     label: '创建时间',
-    width: 200
+    width: 300
   },
   { prop: 'operation', label: '操作', fixed: 'right', width: 340 }
 ]
@@ -140,17 +148,9 @@ const downloadFile = async () => {
   ElMessageBox.confirm('确认导出用户数据?', '温馨提示', { type: 'warning' }).then(() => useDownload(UserApi.export, '用户列表', proTable.value?.searchParam))
 }
 
-// 冻结&解冻用户
-const actionUser = async (title: string, row: UserType) => {
-  ElMessageBox.confirm(`确认${title}【${row.nickname}】用户?`, '温馨提示', { type: 'warning' }).then(async () => {
-    try {
-      await UserApi.freezeUser(row.pkId)
-      ElMessage.success(`${title}用户成功`)
-      // 重新获取数据
-      proTable.value.getTableList()
-    } catch (error) {
-      ElMessage.error(`${title}用户失败`)
-    }
-  })
+// 删除用户信息
+const deleteAccount = async (params) => {
+  await useHandleData(UserApi.delete, [params.id], `删除【${params.username}】用户`)
+  proTable.value.getTableList()
 }
 </script>
