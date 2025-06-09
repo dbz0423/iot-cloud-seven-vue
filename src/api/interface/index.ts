@@ -184,3 +184,35 @@ export interface DictConfigRes {
   updateTime: string
   value: number
 }
+
+export namespace Device {
+  export interface ReqDeviceList {
+    page: number
+    limit: number
+    name?: string
+  }
+
+  export interface ResDeviceList {
+    id: number
+    name: string
+    type: number
+    deviceId: string
+    deviceStatus: number
+    deviceOnline: number
+    createTime: string
+    tenantId: number
+  }
+
+  export interface ReqAddDevice {
+    name: string
+    type: number
+    deviceId: string
+  }
+
+  export interface ReqUpdateDevice {
+    id: number
+    name?: string
+    type?: number
+    deviceId?: string
+  }
+}
