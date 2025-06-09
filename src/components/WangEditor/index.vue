@@ -4,7 +4,6 @@
     <Editor v-model="valueHtml" class="editor-content'" :style="{ height }" :mode="mode" :default-config="editorConfig" @on-created="handleCreated" @on-blur="handleBlur" />
   </div>
 </template>
-
 <script setup lang="ts" name="WangEditor">
 import { nextTick, computed, inject, shallowRef, onBeforeUnmount } from 'vue'
 import { IToolbarConfig, IEditorConfig } from '@wangeditor/editor'
@@ -16,7 +15,7 @@ import { formContextKey, formItemContextKey } from 'element-plus'
 // 富文本 DOM 元素
 const editorRef = shallowRef()
 
-// 实列化编辑器
+// 实例化编辑器
 const handleCreated = (editor: any) => {
   editorRef.value = editor
 }
@@ -82,7 +81,7 @@ const valueHtml = computed({
  * @description 图片自定义上传
  * @param file 上传的文件
  * @param insertFn 上传成功后的回调函数（插入到富文本编辑器中）
- * */
+ */
 type InsertFnTypeImg = (url: string, alt?: string, href?: string) => void
 props.editorConfig.MENU_CONF!['uploadImage'] = {
   async customUpload(file: File, insertFn: InsertFnTypeImg) {
@@ -108,25 +107,31 @@ const uploadImgValidate = (file: File): boolean => {
  * @description 视频自定义上传
  * @param file 上传的文件
  * @param insertFn 上传成功后的回调函数（插入到富文本编辑器中）
- * */
+ */
 type InsertFnTypeVideo = (url: string, poster?: string) => void
 props.editorConfig.MENU_CONF!['uploadVideo'] = {
-  async customUpload(file: File, insertFn: InsertFnTypeVideo) {
+  server: 'http://localhost:8181/share-admin-api/common/upload/video', // 替换为你的视频上传地址
+  fieldName: 'file', // 上传文件的字段名
+  maxFileSize: 100 * 1024 * 1024, // 100M
+  allowedFileTypes: ['video/mp4', 'video/avi', 'video/mov', 'video/mkv', 'video/flv'],
+  timeout: 60 * 1000, // 60秒
+  customUpload: async (file: File, insertFn: InsertFnTypeVideo) => {
     if (!uploadVideoValidate(file)) return
     let formData = new FormData()
     formData.append('file', file)
     try {
       const { data } = await uploadVideo(formData)
       insertFn(data.fileUrl)
+      console.log('视频上传成功', data.fileUrl)
     } catch (error) {
-      console.log(error)
+      console.error('视频上传失败', error)
     }
   }
 }
 
 // 视频上传前判断
 const uploadVideoValidate = (file: File): boolean => {
-  console.log(file)
+  console.log(file + '111111111111111111111111')
   return true
 }
 
