@@ -16,8 +16,8 @@ export const getNewsList = () => {
   return http.post<News.ResNewsList>(_API + `/api/new/list`)
 }
 export const getNews = () => {
-  console.log('aaaaaaaaaaaaaa' + http.post<News.ResNewsList>(_API + `/api/new/test`))
-  return http.post<News.ResNewsList>(_API + `/api/new/test`)
+  console.log('aaaaaaaaaaaaaa' + http.post<News.ResNewsList>(_API + `/api/new/updateTopField`))
+  return http.post<News.ResNewsList>(_API + `/api/new/updateTopField`)
 }
 
 // * 新增角色

@@ -14,5 +14,8 @@ export const uploadImg = (params: FormData) => {
 
 // * 视频上传
 export const uploadVideo = (params: FormData) => {
-  return http.post<Upload.ResFileUrl>(_API + `/file/upload/video`, params)
+  console.log('aaaaaaaaaaaaaa' + http.post<Upload.ResFileUrl>(_API + `/common/upload/video`, params, { headers: { 'Content-Type': 'multipart/form-data' } }))
+  return http.post<Upload.ResFileUrl>(_API + `/common/upload/video`, params, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
 }

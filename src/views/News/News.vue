@@ -4,15 +4,15 @@
     <ProTable ref="proTable" title="资讯列表" :columns="columns" :requestApi="getTableList" :initParam="initParam" :dataCallback="dataCallback">
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')">新增资讯</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['news:new:add']">新增资讯</el-button>
         <el-button type="danger" :icon="Minus" @click="batchDelete()">删除资讯</el-button>
         <el-button type="success" :icon="RefreshRight" @click="updateChange()">更新资讯</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="success" :icon="View" @click="openDrawer('查看', scope.row)">查看</el-button>
-        <el-button type="primary" :icon="EditPen" @click="openDrawer('编辑', scope.row)">编辑</el-button>
-        <el-button type="danger" :icon="Delete" @click="deleteRow(scope.row)">删除</el-button>
+        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['news:new:add']">查看</el-button>
+        <el-button type="warning" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['news:new:add']">编辑</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteRow(scope.row)" v-hasPermi="['news:new:add']">删除</el-button>
       </template>
     </ProTable>
     <NewsDialog ref="dialogRef" />
@@ -100,12 +100,36 @@ const columns: ColumnProps[] = [
     label: '封面',
     width: 200,
     render: (scope) => {
+      const getFirstImage = (html: string) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html')
+        return doc.querySelector('img')?.src || 'https://img95.699pic.com/desgin_photo/40186/9231_detail.jpg!detail860/fw/820/crop/0x0a0a1309/quality/90'
+      }
       return h(ElImage, {
-        style: { width: 90 + '%', height: '80px' },
-        src: scope.row.cover,
+        style: { width: '90%', height: '80px' },
+        src: getFirstImage(scope.row.content),
         fit: 'cover',
-        previewSrcList: [scope.row.cover]
+        previewSrcList: [getFirstImage(scope.row.content)]
       })
+    }
+  },
+  {
+    prop: 'video',
+    label: '视频',
+    width: 300,
+    render: (scope) => {
+      return scope.row.video
+        ? h('video', {
+            style: {
+              width: '100%',
+              height: '120px',
+              objectFit: 'cover',
+              borderRadius: '4px'
+            },
+            src: scope.row.video,
+            controls: true,
+            preload: 'metadata'
+          })
+        : h(ElTag, { type: 'info', style: { marginLeft: '10px' } }, '无视频内容')
     }
   },
   {
