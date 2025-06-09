@@ -23,7 +23,6 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import { useHandleData } from '@/hooks/useHandleData'
 import ProTable from '@/components/ProTable/index.vue'
 import TenantDialog from './components/TenantDialog.vue'
-import { CirclePlus, Delete, EditPen, View } from '@element-plus/icons-vue'
 import { getTenantPage, addTenant, editTenant, deleteTenant } from '@/api/modules/tenant'
 import { ElImage } from 'element-plus'
 import dayjs from 'dayjs'
@@ -46,8 +45,7 @@ const dataCallback = (data: any) => {
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
   let newParams = { ...params }
-  const list = getTenantPage(newParams)
-  return list
+  return getTenantPage(newParams)
 }
 
 // 表格配置项
@@ -59,7 +57,7 @@ const columns: ColumnProps[] = [
   },
   {
     prop: 'name',
-    label: '租客名称',
+    label: '租户名称',
     search: { el: 'input' }
   },
   {
@@ -67,9 +65,9 @@ const columns: ColumnProps[] = [
     label: '类型',
     render: (scope) => {
       const typeMap = {
-        1: '小区',
-        2: '学校',
-        3: '驿站'
+        0: '小区',
+        1: '学校',
+        2: '驿站'
       }
       return typeMap[scope.row.type] || '未知'
     }
@@ -100,7 +98,7 @@ const columns: ColumnProps[] = [
 
 // 删除单个
 const deleteRow = async (params: Tenant.ResTenantList) => {
-  await useHandleData(deleteTenant, [params.id], `删除【${params.name}租客`)
+  await useHandleData(deleteTenant, [params.id], `删除【${params.name}租户】`)
   proTable.value.getTableList()
 }
 
