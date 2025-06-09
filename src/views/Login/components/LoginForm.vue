@@ -64,6 +64,7 @@ const login = (formEl: FormInstance | undefined) => {
       appStore.setToken(data.access_token)
       // 获取登录用户信息
       const { data: userinfo } = await getManagerInfoApi()
+      console.log('userInfo', userinfo)
       appStore.setUserinfo(userinfo)
       // 2.添加动态路由
       await initDynamicRouter()

@@ -139,7 +139,8 @@ const handleSubmit = () => {
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {
-      await dialogProps.value.api!(dialogProps.value.row).then((_) => {
+      let params = { ...dialogProps.value.row, tenantId: appStore.userInfo.tenantId }
+      await dialogProps.value.api!(params).then((_) => {
         // 如果被编辑的是当前用户，则刷新
         if (dialogProps.value.row.pkId === appStore.$state.userInfo.pkId)
           getManagerInfoApi().then((res) => {

@@ -12,6 +12,7 @@ export const getManagerPage = (params: SysManager.ReqGetManagerParams) => {
 
 // * 新增用户
 export const addManager = (params: SysManager.ReqEditManagerParams) => {
+  console.log('addParams', params)
   return http.post(_API + `/sys/manager/add`, params)
 }
 

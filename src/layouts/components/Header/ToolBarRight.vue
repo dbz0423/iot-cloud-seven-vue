@@ -10,6 +10,7 @@
     </div>
     <span class="username">{{ username }}</span>
     <Avatar />
+    <span class="tenantname">{{ tenantname }}</span>
   </div>
 </template>
 
@@ -25,6 +26,7 @@ import Avatar from './components/Avatar.vue'
 
 const appStore = useAppStoreWithOut()
 const username = computed(() => appStore.userInfo.username)
+const tenantname = computed(() => appStore.userInfo.tenantName)
 </script>
 
 <style scoped lang="less">
@@ -44,6 +46,11 @@ const username = computed(() => appStore.userInfo.username)
   }
 
   .username {
+    margin: 0 20px;
+    font-size: 15px;
+  }
+
+  .tenantname {
     margin: 0 20px;
     font-size: 15px;
   }
