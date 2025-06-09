@@ -3,7 +3,7 @@
     <ProTable ref="proTable" title="资讯列表" :columns="columns" :requestApi="getTableList" :initParam="initParam" :dataCallback="dataCallback">
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['sys:role:add']">新增角色</el-button>
+        <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['sys:role:add']">新增租户</el-button>
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">

@@ -108,6 +108,7 @@ export namespace News {
     id: number
     title: string
     content: string
+    tenantId?: number
     img: string
   }
 }
