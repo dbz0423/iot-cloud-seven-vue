@@ -84,14 +84,10 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
     prop: 'status',
     label: '状态',
     render: (scope) => {
-      return (
-        <>
-          {BUTTONS.value.status ? (
-            <el-switch model-value={scope.row.status} active-text={scope.row.status ? '启用' : '禁用'} active-value={1} inactive-value={0} />
-          ) : (
-            <el-tag type={scope.row.status ? 'success' : 'danger'}>{scope.row.status ? '启用' : '禁用'}</el-tag>
-          )}
-        </>
+      return BUTTONS.value.status ? (
+        <el-switch model-value={scope.row.status} active-text={scope.row.status ? '启用' : '禁用'} active-value={1} inactive-value={0} />
+      ) : (
+        <el-tag type={scope.row.status ? 'success' : 'danger'}>{scope.row.status ? '启用' : '禁用'}</el-tag>
       )
     }
   },
@@ -105,7 +101,7 @@ const columns: ColumnProps<SysManager.ResManagerList>[] = [
 
 // 删除用户信息
 const deleteAccount = async (params: SysManager.ResManagerList) => {
-  await useHandleData(deleteManager, [params.id], `删除【${params.username}】用户`)
+  await useHandleData(deleteManager, [params.pkId], `删除【${params.username}】用户`)
   proTable.value.getTableList()
 }
 
