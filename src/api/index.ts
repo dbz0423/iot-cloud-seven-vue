@@ -1,5 +1,5 @@
 import { ResultData } from '@/api/interface'
-import request from './axios/reuqest'
+import request from './axios/request'
 
 export default {
   post<T>(url: string, params?: object, _object = {}): Promise<ResultData<T>> {

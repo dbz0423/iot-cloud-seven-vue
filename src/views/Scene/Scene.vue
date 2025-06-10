@@ -8,10 +8,14 @@
       <!-- 表格操作 -->
       <template #operation="scope">
         <el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['scene:manager:edit']">编辑</el-button>
+        <el-button type="primary" link :icon="User" @click="openAssignDialog('user', scope.row)" v-hasPermi="['scene:manager:assignUser']">分配用户</el-button>
+        <el-button type="primary" link :icon="Cpu" @click="openAssignDialog('device', scope.row)" v-hasPermi="['scene:manager:assignDevice']">分配设备</el-button>
         <el-button type="danger" link :icon="Delete" @click="deleteSceneData(scope.row)" v-hasPermi="['scene:manager:delete']">删除</el-button>
       </template>
     </ProTable>
-    <SceneModal ref="dialogRef" />
+    <SceneDialog ref="sceneDialogRef" />
+    <AssignUserDialog ref="assignUserDialogRef" />
+    <AssignDeviceDialog ref="assignDeviceDialogRef" />
   </div>
 </template>
 
@@ -21,12 +25,16 @@ import { Scene } from '@/api/interface'
 import { ColumnProps } from '@/components/ProTable/interface'
 import { useHandleData } from '@/hooks/useHandleData'
 import ProTable from '@/components/ProTable/index.vue'
-import SceneModal from './components/SceneModal.vue'
-import { CirclePlus, Delete, EditPen } from '@element-plus/icons-vue'
+import SceneDialog from './components/SceneDialog.vue'
+import AssignUserDialog from './components/AssignUserDialog.vue'
+import AssignDeviceDialog from './components/AssignDeviceDialog.vue'
+import { CirclePlus, Delete, EditPen, User, Cpu } from '@element-plus/icons-vue'
 import { getSceneList, addScene, updateScene, deleteScene } from '@/api/modules/scene'
 
 const proTable = ref()
-const dialogRef = ref()
+const sceneDialogRef = ref()
+const assignUserDialogRef = ref()
+const assignDeviceDialogRef = ref()
 
 const columns: ColumnProps<Scene.ResSceneList>[] = [
   { type: 'selection', fixed: 'left', width: 60 },
@@ -48,6 +56,19 @@ const openDrawer = (title: string, row: Partial<Scene.ResSceneList> = {}) => {
     api: title === '新增' ? addScene : updateScene,
     getTableList: proTable.value.getTableList
   }
-  dialogRef.value.acceptParams(params)
+  sceneDialogRef.value.openDialog(params)
+}
+
+const openAssignDialog = (type: 'user' | 'device', row: Partial<Scene.ResSceneList> = {}) => {
+  const params = {
+    row: { ...row }
+  }
+  if (type === 'user') {
+    assignUserDialogRef.value.acceptParams(params)
+  } else {
+    assignDeviceDialogRef.value.acceptParams(params)
+  }
 }
 </script>
+
+<style lang="scss" scoped></style>

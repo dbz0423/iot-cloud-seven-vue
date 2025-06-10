@@ -27,7 +27,7 @@
       :row-key="rowKey"
       @selection-change="selectionChange"
       :default-expand-all="expandAll"
-      :height="tableData.length == 0 ? '40vh' : undefined"
+      :height="height"
     >
       <!-- 默认插槽 -->
       <slot></slot>
@@ -118,6 +118,8 @@ export interface ProTableProps {
   searchCol?: number | Record<BreakPoint, number>
   /** 是否默认展开所有行 ==> 非必传（默认为false） */
   expandAll?: boolean
+  /** 表格高度 */
+  height?: string
 }
 
 // 接受父组件参数，配置默认值
@@ -130,7 +132,8 @@ const props = withDefaults(defineProps<ProTableProps>(), {
   toolButton: true,
   rowKey: 'id',
   expandAll: false,
-  searchCol: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 })
+  searchCol: () => ({ xs: 1, sm: 2, md: 2, lg: 3, xl: 4 }),
+  height: '550px'
 })
 
 // 是否显示搜索模块
@@ -252,7 +255,7 @@ const print = () => {
   })
 }
 
-// 暴露给父组件的参数和方法(外部需要什么，都可以从这里暴露出去)
+// 暴露给父组件的参数和方法 (外部需要什么，都可以从这里暴露出去)
 defineExpose({
   element: tableRef,
   tableData,
@@ -268,6 +271,7 @@ defineExpose({
   enumMap,
   isSelected,
   selectedList,
-  selectedListIds
+  selectedListIds,
+  toggleRowSelection: (row: any, select: boolean) => tableRef.value?.toggleRowSelection(row, select)
 })
 </script>
