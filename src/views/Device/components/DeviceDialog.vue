@@ -4,8 +4,8 @@
       <el-form-item label="设备名称" prop="name">
         <el-input v-model="dialogProps.row.name" placeholder="请输入设备名称" />
       </el-form-item>
-      <el-form-item label="设备ID" prop="deviceId">
-        <el-input v-model="dialogProps.row.deviceId" placeholder="请输入设备ID" />
+      <el-form-item label="设备id" prop="deviceId">
+        <el-input v-model="dialogProps.row.deviceId" placeholder="请输入设备id" />
       </el-form-item>
       <el-form-item label="设备类型" prop="type">
         <el-select v-model="dialogProps.row.type" placeholder="请选择设备类型">

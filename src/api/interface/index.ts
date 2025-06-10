@@ -217,3 +217,25 @@ export namespace Device {
     deviceId?: string
   }
 }
+
+// * 场景管理模块
+export namespace Scene {
+  export interface ReqSceneList extends ReqPage {
+    name?: string
+  }
+
+  export interface ResSceneList {
+    id: number
+    name: string
+    createTime: string
+  }
+
+  export interface ReqAddScene {
+    name: string
+  }
+
+  export interface ReqUpdateScene {
+    id: number
+    name: string
+  }
+}

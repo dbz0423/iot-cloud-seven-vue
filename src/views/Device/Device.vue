@@ -51,7 +51,7 @@ const getTableList = (params: any) => {
 const columns: ColumnProps<Device.ResDeviceList>[] = [
   { type: 'selection', fixed: 'left', width: 60 },
   { prop: 'name', label: '设备名称', search: { el: 'input' } },
-  { prop: 'deviceId', label: '设备ID' },
+  { prop: 'deviceId', label: '设备id' },
   {
     prop: 'type',
     label: '设备类型',
@@ -103,7 +103,7 @@ const handleMessage = (data: any) => {
 }
 
 const { connect, disconnect } = useWebSocket({
-  url: 'ws://192.168.100.239:8082/ws/device/status',
+  url: 'ws://192.168.100.239:8183/ws/device/status',
   onMessage: handleMessage
 })
 
