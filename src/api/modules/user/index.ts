@@ -22,5 +22,10 @@ export const UserApi = {
       responseType: 'blob'
     }),
   // 删除用户
-  delete: (params: number[]) => http.post(_API + '/user/delete', params)
+  delete: (params: number[]) => http.post(_API + '/user/delete', params),
+  import: (data: FormData) => http.post(_API + '/user/import', data),
+  exportTemplate: (params: any) =>
+    http.post(_API + '/user/exportTemplate', params, {
+      responseType: 'blob'
+    })
 }

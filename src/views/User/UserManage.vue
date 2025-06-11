@@ -1,7 +1,7 @@
 <template>
   <div class="table-box">
     <ProTable
-      rowKey="pkId"
+      rowKey="id"
       ref="proTable"
       title="用户列表"
       :columns="columns"
@@ -14,7 +14,9 @@
     >
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
-        <el-button type="primary" :icon="CirclePlus" @click="openDialog('新增用户')" v-hasPermi="['sys:user:add']">新增用户</el-button>
+        <el-button type="primary" :icon="Download" plain @click="openImport">导入</el-button>
+        <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
+        <el-button type="primary" plain :icon="CirclePlus" @click="openDialog('新增')" v-hasPermi="['sys:user:add']">新增用户</el-button>
         <el-button type="danger" :icon="Delete" plain :disabled="!proTable?.isSelected" @click="batchDelete(proTable?.selectedListIds)" v-hasPermi="['sys:user:remove']"
           >批量删除</el-button
         >
@@ -29,6 +31,14 @@
       </template>
     </ProTable>
     <UserDialog ref="dialogRef" />
+    <ExcelImportDialog
+      ref="excelDialogRef"
+      :api="UserApi.import"
+      :temp-api="UserApi.exportTemplate"
+      :on-success="handleImportSuccess"
+      :template-params="{ tenantId: appstore.userInfo.tenantId }"
+      template-name="用户数据模板.xlsx"
+    />
     <AssignSceneDialog ref="assignSceneDialogRef" />
     <AssignDeviceDialog ref="assignDeviceDialogRef" />
   </div>
@@ -38,12 +48,16 @@
 import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
-import { CirclePlus, View, EditPen, Delete, Connection, Cpu } from '@element-plus/icons-vue'
+import UserDialog from './components/UserDialog.vue'
+import { CirclePlus, View, EditPen, Delete, Connection, Cpu, Download } from '@element-plus/icons-vue'
 import { UserApi } from '@/api/modules/user'
 import { useHandleData } from '@/hooks/useHandleData'
 import { useAppStoreWithOut } from '@/store/modules/app'
+import { ElMessageBox } from 'element-plus'
+import { useDownload } from '@/hooks/useDownload'
+import ExcelImportDialog from '@/components/ImportExcel/index.vue'
+// import { useDate } from '@/hooks/useDate'
 import { useRoute } from 'vue-router'
-import UserDialog from './components/UserDialog.vue'
 import AssignSceneDialog from './components/AssignSceneDialog.vue'
 import AssignDeviceDialog from './components/AssignDeviceDialog.vue'
 
@@ -68,6 +82,25 @@ const dataCallback = (data: any) => {
 }
 
 const appstore = useAppStoreWithOut()
+
+// 导出列表
+const downloadFile = async () => {
+  console.log('protable', proTable.value?.searchParam)
+  // 获取选中行的完整数据
+  const selectedRows = proTable.value?.selectedList || []
+  console.log('selectedRows', selectedRows)
+  // 提取选中用户的mobile和nickname
+  const selectedMobiles = [...new Set(selectedRows.map((row) => row.mobile))]
+  const selectedNicknames = [...new Set(selectedRows.map((row) => row.nickname))]
+  const newParams = {
+    ...proTable.value?.searchParam,
+    tenantId: appstore.userInfo.tenantId,
+    // 添加选中用户的参数
+    mobile: selectedMobiles,
+    nickname: selectedNicknames
+  }
+  ElMessageBox.confirm('确认导出用户数据?', '温馨提示', { type: 'warning' }).then(() => useDownload(UserApi.export, '用户列表', newParams))
+}
 
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
@@ -132,10 +165,23 @@ const columns: ColumnProps<UserType>[] = [
   { prop: 'operation', label: '操作', fixed: 'right', width: 340 }
 ]
 
+const excelDialogRef = ref()
 // 打开 drawer(新增、查看、编辑)
 const dialogRef = ref()
 const assignSceneDialogRef = ref()
 const assignDeviceDialogRef = ref()
+
+const handleImportSuccess = () => {
+  proTable.value.getTableList()
+  ElMessage.success('导入成功')
+}
+
+const openImport = () => {
+  excelDialogRef.value.acceptParams({
+    title: '用户导入',
+    templateFileName: '用户数据模板.xlsx'
+  })
+}
 
 const openDialog = (title: string, row: Partial<UserType> = {}) => {
   const params = {

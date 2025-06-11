@@ -9,6 +9,8 @@ import { ElNotification } from 'element-plus'
  * @return void
  * */
 export const useDownload = async (api: (param: any) => Promise<any>, tempName: string, params: any = {}, isNotify: boolean = true, fileType: string = '.xls') => {
+  console.log('useDownload', params)
+
   if (isNotify) {
     ElNotification({
       title: '温馨提示',
