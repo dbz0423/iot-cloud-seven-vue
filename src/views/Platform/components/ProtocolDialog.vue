@@ -21,7 +21,7 @@
         <el-input v-model="dialogProps.row!.name" placeholder="请输入协议名称" />
       </el-form-item>
       <el-form-item label="协议内容" prop="content">
-        <WangEditor v-model:value="dialogProps.row!.content" height="400px" />
+        <WangEditor v-model:value="dialogProps.row!.content" height="300" :disabled="dialogProps.isView" :hide-tool-bar="dialogProps.isView" />
       </el-form-item>
     </el-form>
     <template #footer>

@@ -14,7 +14,7 @@
           <el-input v-model="dialogProps.row!.versionNumber" placeholder="请输入版本号" clearable></el-input>
         </el-form-item>
         <el-form-item label="版本描述" prop="description">
-          <WangEditor v-model:value="dialogProps.row!.description" height="300px" />
+          <WangEditor v-model:value="dialogProps.row!.description" height="300" :disabled="dialogProps.isView" :hide-tool-bar="dialogProps.isView" />
         </el-form-item>
         <el-form-item label="发布时间" prop="releaseTime">
           <el-date-picker v-model="dialogProps.row!.releaseTime" type="datetime" placeholder="请选择发布时间" clearable></el-date-picker>
