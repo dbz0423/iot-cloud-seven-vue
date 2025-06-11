@@ -7,7 +7,7 @@ import http from '@/api'
  */
 // * 获取角色分页列表
 export const getNewsPage = (params: News.ReqGetNewsParams) => {
-  console.log('aaaaaaaaaaaaaa' + http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params))
+  console.log('aaaaaaaaaaaaaa', http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params))
   return http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params)
 }
 

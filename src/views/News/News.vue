@@ -5,8 +5,8 @@
       <!-- 表格 header 按钮 -->
       <template #tableHeader>
         <el-button type="primary" :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['news:new:add']">新增资讯</el-button>
-        <el-button type="danger" :icon="Minus" @click="batchDelete()">删除资讯</el-button>
-        <el-button type="success" :icon="RefreshRight" @click="updateChange()">更新资讯</el-button>
+        <!-- <el-button type="danger" :icon="Minus" @click="batchDelete()">删除资讯</el-button>
+        <el-button type="success" :icon="RefreshRight" @click="updateChange()">更新资讯</el-button> -->
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
@@ -26,9 +26,9 @@ import { ColumnProps } from '@/components/ProTable/interface'
 import { useHandleData } from '@/hooks/useHandleData'
 import ProTable from '@/components/ProTable/index.vue'
 import NewsDialog from './components/NewsDialog.vue'
-import { CirclePlus, Delete, EditPen, View, Minus, RefreshRight } from '@element-plus/icons-vue'
-import { getNewsPage, addNews, editNews, deleteNews, getNews } from '@/api/modules/news'
-import { ElImage, ElButton, ElMessage, ElTag } from 'element-plus'
+import { CirclePlus, Delete, EditPen, View } from '@element-plus/icons-vue'
+import { getNewsPage, addNews, editNews, deleteNews } from '@/api/modules/news'
+import { ElImage, ElButton, ElTag, ElText } from 'element-plus'
 import dayjs from 'dayjs'
 import { useSelection } from '@/hooks/useSelection'
 
@@ -38,10 +38,10 @@ const proTable = ref()
 // 如果表格需要初始化请求参数，直接定义传给 ProTable(之后每次请求都会自动带上该参数，此参数更改之后也会一直带上，改变此参数会自动刷新表格数据)
 const initParam = reactive({})
 
-const updateChange = () => {
-  const res = getNews()
-  console.log('更新信息' + res)
-}
+// const updateChange = () => {
+//   const res = getNews()
+//   console.log('更新信息' + res)
+// }
 // dataCallback 是对于返回的表格数据做处理，如果你后台返回的数据不是 datalist && total 这些字段，那么你可以在这里进行处理成这些字段
 const dataCallback = (data: any) => {
   return {
@@ -51,23 +51,36 @@ const dataCallback = (data: any) => {
 }
 const { selectedListIds } = useSelection()
 console.log(selectedListIds)
-const batchDelete = async () => {
-  if (selectedListIds.value.length === 0) {
-    ElMessage.warning('请先选择要删除的资讯')
-    return
-  }
-  try {
-    await useHandleData(deleteNews, selectedListIds.value, '删除选中资讯')
-    proTable.value.getTableList()
-    ElMessage.success('删除成功')
-  } catch (error) {
-    ElMessage.error('删除失败')
-  }
-}
+// const batchDelete = async () => {
+//   if (selectedListIds.value.length === 0) {
+//     ElMessage.warning('请先选择要删除的资讯')
+//     return
+//   }
+//   try {
+//     await useHandleData(deleteNews, selectedListIds.value, '删除选中资讯')
+//     proTable.value.getTableList()
+//     ElMessage.success('删除成功')
+//   } catch (error) {
+//     ElMessage.error('删除失败')
+//   }
+// }
 // 如果你想在请求之前对当前请求参数做一些操作，可以自定义如下函数：params 为当前所有的请求参数（包括分页），最后返回请求列表接口
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
+// 在setup顶部添加props声明
+const props = defineProps<{
+  initParam?: Record<string, any>
+}>()
+
 const getTableList = (params: any) => {
-  let newParams = { ...params }
+  // 合并初始化参数和搜索参数
+  let newParams = { ...(props.initParam || {}), ...params }
+  console.log('newParams', newParams)
+  // if (newParams.type === 100 || newParams.type === undefined) {
+  //   return getNewsPage(newParams)
+  // }
+  if (newParams.type === 100 || newParams.type === undefined) {
+    delete newParams.type
+  }
   const list = getNewsPage(newParams)
   return list
 }
@@ -78,6 +91,19 @@ const columns: ColumnProps[] = [
   {
     prop: 'id',
     label: '编号'
+  },
+  {
+    prop: 'type',
+    label: '分类',
+    render: (scope) => {
+      const contentMap = {
+        0: '最新动态',
+        1: '通知公告',
+        2: '设备监控',
+        3: '智慧教室'
+      }
+      return h(ElText, { modelValue: contentMap[scope.row.type] }, { default: () => contentMap[scope.row.type] || '未知' })
+    }
   },
   {
     prop: 'title',

@@ -91,6 +91,7 @@ export namespace SysRole {
 export namespace News {
   export interface ReqGetNewsParams extends ReqPage {
     title?: string
+    type?: number
   }
   export interface ResNewsList {
     id: number
@@ -98,12 +99,15 @@ export namespace News {
     content: string
     img: string
     createTime: string
+    type?: number
+    top?: number
   }
   export interface ReqEditNewsParams {
     id: number
     title: string
     content: string
     img: string
+    type: number
   }
 }
 
