@@ -45,6 +45,14 @@
             <el-icon v-else class="video-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
+        <el-form-item label="类型" prop="type">
+          <el-select v-model="dialogProps.row!.type" filterable placeholder="请选择" class="w-full">
+            <el-option label="最新动态" :value="0" />
+            <el-option label="通知公告" :value="1" />
+            <el-option label="设备监控" :value="2" />
+            <el-option label="智慧教室" :value="3" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="点赞数" prop="support">
           <el-input-number v-model="dialogProps.row!.support" placeholder="输入点赞数" :disabled="dialogProps.isView"></el-input-number>
         </el-form-item>
@@ -134,7 +142,7 @@ const dialogVisible = ref(false)
 const dialogProps = ref<DialogProps>({
   isView: false,
   title: '',
-  row: { id: '', title: '', content: '', cover: '', video: '', createTime: new Date(), scheduledTime: null },
+  row: { id: '', title: '', content: '', cover: '', video: '', createTime: new Date(), scheduledTime: null, type: '' },
   labelWidth: 160,
   fullscreen: true,
   maxHeight: '500px'
@@ -155,8 +163,9 @@ const rules = reactive({
   id: [{ required: true, message: '请填写编号', trigger: 'blur' }],
   title: [{ required: true, message: '请填写标题', trigger: 'blur' }],
   content: [{ required: true, message: '请填写内容', trigger: 'blur' }],
-  cover: [{ required: true, message: '请上传封面', trigger: 'blur' }],
   createTime: [{ required: true, message: '请选择创建时间', trigger: 'blur' }],
+  type: [{ required: true, message: '请选择类型', trigger: 'blur' }],
+  support: [{ required: true, message: '请填写点赞数', trigger: 'blur' }],
   scheduledTime: [{ required: false }]
 })
 
@@ -194,6 +203,7 @@ const handleVideoError = (err) => {
 }
 
 const handleSubmit = () => {
+  dialogVisible.value = false
   ruleFormRef.value!.validate(async (valid) => {
     if (!valid) return
     try {

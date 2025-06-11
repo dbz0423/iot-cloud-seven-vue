@@ -95,6 +95,7 @@ export namespace News {
   export interface ReqGetNewsParams extends ReqPage {
     tenantId?: number
     title?: string
+    type?: number
   }
   export interface ResNewsList {
     id: number
@@ -102,6 +103,8 @@ export namespace News {
     content: string
     img: string
     createTime: string
+    type?: number
+    top?: number
     tenantId?: number
   }
   export interface ReqEditNewsParams {
@@ -110,6 +113,7 @@ export namespace News {
     content: string
     tenantId?: number
     img: string
+    type: number
   }
 }
 

@@ -10,7 +10,6 @@ const appStore = useAppStoreWithOut()
  */
 // * 获取角色分页列表
 export const getNewsPage = (params: News.ReqGetNewsParams) => {
-  console.log('aaaaaaaaaaaaaa' + params)
   return http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params)
 }
 

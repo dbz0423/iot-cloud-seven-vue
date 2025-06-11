@@ -2,9 +2,18 @@
   <div class="card table-search" v-if="columns.length">
     <el-form ref="formRef" :model="searchParam">
       <Grid ref="gridRef" :collapsed="collapsed" :gap="[20, 0]" :cols="searchCol">
-        <GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index">
+        <GridItem v-for="(item, index) in columns" :key="item.prop" v-bind="getResponsive(item)" :index="index" style="display: flex; grid-gap: 80px; width: 600px">
           <el-form-item :label="`${item.label} :`">
             <SearchFormItem :column="item" :search-param="searchParam" />
+          </el-form-item>
+          <el-form-item label="类型" prop="type">
+            <el-select filterable placeholder="请选择" class="w-full" v-model="searchParam.type" @change="handleTypeChange">
+              <el-option label="全部" :value="100" />
+              <el-option label="最新动态" :value="0" />
+              <el-option label="通知公告" :value="1" />
+              <el-option label="设备监控" :value="2" />
+              <el-option label="智慧教室" :value="3" />
+            </el-select>
           </el-form-item>
         </GridItem>
         <GridItem suffix>
@@ -23,6 +32,7 @@
     </el-form>
   </div>
 </template>
+
 <script setup lang="ts" name="SearchForm">
 import { computed, ref } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
@@ -84,4 +94,10 @@ const showCollapse = computed(() => {
   }, 0)
   return show
 })
+
+// 下拉框分类搜索
+const handleTypeChange = () => {
+  // 触发搜索
+  props.search(props.searchParam)
+}
 </script>
