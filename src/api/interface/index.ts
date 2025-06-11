@@ -217,3 +217,51 @@ export namespace Device {
     deviceId?: string
   }
 }
+
+// * 场景管理模块
+export namespace Scene {
+  export interface ReqSceneList extends ReqPage {
+    name?: string
+  }
+
+  export interface ResSceneList {
+    id: number
+    name: string
+    createTime: string
+  }
+
+  export interface ReqAddScene {
+    name: string
+  }
+
+  export interface ReqUpdateScene {
+    id: number
+    name: string
+  }
+}
+
+// * 绑定管理模块
+export namespace Binding {
+  export interface UserInfo {
+    id: number
+    username: string
+    // 根据实际情况可能还有其他字段
+  }
+
+  export interface DeviceInfo {
+    id: number
+    name: string
+    // 根据实际情况可能还有其他字段
+  }
+
+  export interface SceneInfo {
+    id: number
+    name: string
+    // 根据实际情况可能还有其他字段
+  }
+
+  export interface AssignmentResult<T> {
+    assigned: T[]
+    unassigned: T[]
+  }
+}

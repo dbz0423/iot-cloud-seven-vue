@@ -38,7 +38,7 @@ export const initDynamicRouter = async () => {
       item.children && delete item.children
       if (item.component && isType(item.component) == 'string') {
         // console.log(item.component)
-        item.component = modules['/src/views' + item.component + '.vue']
+        item.component = modules[`/src/views${item.component}.vue`]
         console.log(item.component)
       }
       router.addRoute('layout', item)

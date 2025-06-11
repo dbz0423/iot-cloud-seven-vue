@@ -1,18 +1,17 @@
 <template>
   <el-dialog v-model="dialogVisible" :title="title" width="500px" :close-on-click-modal="false" append-to-body @close="handleClose">
     <el-form ref="formRef" :model="formData" :rules="formRules" label-width="80px">
-      <el-form-item label="设备名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入设备名称" />
+      <el-form-item label="场景名称" prop="name">
+        <el-input v-model="formData.name" placeholder="请输入场景名称" />
       </el-form-item>
-      <el-form-item label="设备ID" prop="deviceId">
-        <el-input v-model="formData.deviceId" placeholder="请输入设备ID" />
+      <el-form-item label="场景状态" prop="status">
+        <el-switch v-model="formData.status" :active-value="1" :inactive-value="0" />
       </el-form-item>
-      <el-form-item label="设备类型" prop="type">
-        <el-select v-model="formData.type" placeholder="请选择设备类型">
-          <el-option label="灯" :value="1" />
-          <el-option label="传感器" :value="2" />
-          <el-option label="摄像头" :value="3" />
-        </el-select>
+      <el-form-item label="场景标识" prop="sceneCode">
+        <el-input v-model="formData.sceneCode" placeholder="请输入场景标识" />
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -27,27 +26,23 @@
 <script setup lang="ts">
 import { ref, reactive, defineEmits, defineExpose } from 'vue'
 import { ElMessage, FormInstance, FormRules } from 'element-plus'
-import { addDevice, updateDevice } from '@/api/modules/device'
+import { addScene, updateScene } from '@/api/modules/scene'
 
 const dialogVisible = ref(false)
-const title = ref('新增设备')
+const title = ref('新增场景')
 const formRef = ref<FormInstance>()
 
 const formData = reactive({
   id: undefined,
   name: '',
   status: 1,
-  deviceCode: '',
-  remark: '',
-  type: null,
-  deviceId: ''
+  sceneCode: '',
+  remark: ''
 })
 
 const formRules = reactive<FormRules>({
-  name: [{ required: true, message: '请输入设备名称', trigger: 'blur' }],
-  deviceCode: [{ required: true, message: '请输入设备标识', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择设备类型', trigger: 'change' }],
-  deviceId: [{ required: true, message: '请输入设备ID', trigger: 'blur' }]
+  name: [{ required: true, message: '请输入场景名称', trigger: 'blur' }],
+  sceneCode: [{ required: true, message: '请输入场景标识', trigger: 'blur' }]
 })
 
 const emit = defineEmits(['success'])
@@ -55,12 +50,12 @@ const emit = defineEmits(['success'])
 const openDialog = (rowData?: any) => {
   dialogVisible.value = true
   if (rowData?.id) {
-    title.value = '编辑设备'
+    title.value = '编辑场景'
     Object.assign(formData, rowData)
   } else {
-    title.value = '新增设备'
+    title.value = '新增场景'
     formRef.value?.resetFields()
-    Object.assign(formData, { id: undefined, name: '', status: 1, deviceCode: '', remark: '', type: null, deviceId: '' })
+    Object.assign(formData, { id: undefined, name: '', status: 1, sceneCode: '', remark: '' })
   }
 }
 
@@ -73,10 +68,10 @@ const handleSubmit = async () => {
   if (!valid) return
   try {
     if (formData.id) {
-      await updateDevice(formData as any)
+      await updateScene(formData as any)
       ElMessage.success('更新成功')
     } else {
-      await addDevice(formData as any)
+      await addScene(formData)
       ElMessage.success('新增成功')
     }
     emit('success')
