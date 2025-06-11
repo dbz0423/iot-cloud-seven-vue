@@ -52,7 +52,6 @@ const dataCallback = (data: any) => {
 }
 const { selectedListIds } = useSelection()
 console.log(selectedListIds)
-<<<<<<< HEAD
 // const batchDelete = async () => {
 //   if (selectedListIds.value.length === 0) {
 //     ElMessage.warning('请先选择要删除的资讯')
@@ -66,23 +65,8 @@ console.log(selectedListIds)
 //     ElMessage.error('删除失败')
 //   }
 // }
-=======
-const batchDelete = async () => {
-  if (selectedListIds.value.length === 0) {
-    ElMessage.warning('请先选择要删除的资讯')
-    return
-  }
-  try {
-    await useHandleData(deleteNews, selectedListIds.value, '删除选中资讯')
-    proTable.value.getTableList()
-    ElMessage.success('删除成功')
-  } catch (error) {
-    ElMessage.error('删除失败')
-  }
-}
 
 const useAppStore = useAppStoreWithOut()
->>>>>>> 46ade231bf3b3391922fbff48d2d35560f31b29d
 // 如果你想在请求之前对当前请求参数做一些操作，可以自定义如下函数：params 为当前所有的请求参数（包括分页），最后返回请求列表接口
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 // 在setup顶部添加props声明
@@ -91,21 +75,13 @@ const props = defineProps<{
 }>()
 
 const getTableList = (params: any) => {
-<<<<<<< HEAD
   // 合并初始化参数和搜索参数
-  let newParams = { ...(props.initParam || {}), ...params }
-  console.log('newParams', newParams)
-  // if (newParams.type === 100 || newParams.type === undefined) {
-  //   return getNewsPage(newParams)
-  // }
+  let newParams = { ...(props.initParam || {}), ...params, tenantId: useAppStore.userInfo.tenantId }
+
   if (newParams.type === 100 || newParams.type === undefined) {
     delete newParams.type
   }
-=======
-  let newParams = { ...params, tenantId: useAppStore.userInfo.tenantId }
   console.log('getNewsPage', newParams)
-
->>>>>>> 46ade231bf3b3391922fbff48d2d35560f31b29d
   const list = getNewsPage(newParams)
   return list
 }

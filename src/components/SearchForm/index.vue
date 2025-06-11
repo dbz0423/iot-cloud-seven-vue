@@ -6,7 +6,7 @@
           <el-form-item :label="`${item.label} :`">
             <SearchFormItem :column="item" :search-param="searchParam" />
           </el-form-item>
-          <el-form-item label="类型" prop="type">
+          <el-form-item label="类型" prop="type" class="w-50">
             <el-select filterable placeholder="请选择" class="w-full" v-model="searchParam.type" @change="handleTypeChange">
               <el-option label="全部" :value="100" />
               <el-option label="最新动态" :value="0" />
