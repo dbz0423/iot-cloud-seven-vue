@@ -1,13 +1,15 @@
 import { ResPage, News } from '@/api/interface/index'
 import { _API } from '@/api/axios/servicePort'
 import http from '@/api'
+import { useAppStoreWithOut } from '@/store/modules/app'
+
+const appStore = useAppStoreWithOut()
 
 /**
  * @name 角色管理模块
  */
 // * 获取角色分页列表
 export const getNewsPage = (params: News.ReqGetNewsParams) => {
-  console.log('aaaaaaaaaaaaaa', http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params))
   return http.post<ResPage<News.ResNewsList>>(_API + `/api/new/page`, params)
 }
 
@@ -22,7 +24,11 @@ export const getNews = () => {
 
 // * 新增角色
 export const addNews = (params: News.ReqEditNewsParams) => {
-  return http.post(_API + `/api/new/add`, params)
+  const newParams = {
+    ...params,
+    tenantId: appStore.userInfo.tenantId
+  }
+  return http.post(_API + `/api/new/add`, newParams)
 }
 
 // * 编辑角色
