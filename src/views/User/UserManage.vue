@@ -16,13 +16,18 @@
       <template #tableHeader>
         <el-button type="primary" :icon="Download" plain @click="openImport">导入</el-button>
         <el-button type="primary" :icon="Download" plain @click="downloadFile">导出</el-button>
-        <el-button type="primary" plain :icon="CirclePlus" @click="openDrawer('新增')" v-hasPermi="['sys:user:add']">新增用户</el-button>
+        <el-button type="primary" plain :icon="CirclePlus" @click="openDialog('新增')" v-hasPermi="['sys:user:add']">新增用户</el-button>
+        <el-button type="danger" :icon="Delete" plain :disabled="!proTable?.isSelected" @click="batchDelete(proTable?.selectedListIds)" v-hasPermi="['sys:user:remove']"
+          >批量删除</el-button
+        >
       </template>
       <!-- 表格操作 -->
       <template #operation="scope">
-        <el-button type="primary" link :icon="View" @click="openDrawer('查看', scope.row)" v-hasPermi="['sys:user:view']">查看</el-button>
-        <el-button type="primary" link :icon="EditPen" @click="openDrawer('编辑', scope.row)" v-hasPermi="['sys:user:edit']">编辑</el-button>
-        <el-button type="danger" link :icon="Delete" @click="deleteAccount(scope.row)" v-hasPermi="['sys:manager:remove']">删除</el-button>
+        <el-button type="primary" link :icon="View" @click="openDialog('查看管理员', scope.row)">查看</el-button>
+        <el-button type="primary" link :icon="EditPen" @click="openDialog('编辑管理员', scope.row)" v-hasPermi="['sys:user:edit']">编辑</el-button>
+        <el-button type="primary" link :icon="Connection" @click="openAssignDialog('scene', scope.row)" v-hasPermi="['sys:user:assignScene']">分配场景</el-button>
+        <el-button type="primary" link :icon="Cpu" @click="openAssignDialog('device', scope.row)" v-hasPermi="['sys:user:assignDevice']">分配设备</el-button>
+        <el-button type="danger" link :icon="Delete" @click="deleteManager(scope.row)" v-hasPermi="['sys:user:remove']">删除</el-button>
       </template>
     </ProTable>
     <UserDialog ref="dialogRef" />
@@ -34,6 +39,8 @@
       :template-params="{ tenantId: appstore.userInfo.tenantId }"
       template-name="用户数据模板.xlsx"
     />
+    <AssignSceneDialog ref="assignSceneDialogRef" />
+    <AssignDeviceDialog ref="assignDeviceDialogRef" />
   </div>
 </template>
 
@@ -42,7 +49,7 @@ import { ref, reactive } from 'vue'
 import { ColumnProps } from '@/components/ProTable/interface'
 import ProTable from '@/components/ProTable/index.vue'
 import UserDialog from './components/UserDialog.vue'
-import { CirclePlus, View, EditPen, Delete, Download } from '@element-plus/icons-vue'
+import { CirclePlus, View, EditPen, Delete, Connection, Cpu, Download } from '@element-plus/icons-vue'
 import { UserApi } from '@/api/modules/user'
 import { useHandleData } from '@/hooks/useHandleData'
 import { useAppStoreWithOut } from '@/store/modules/app'
@@ -50,15 +57,26 @@ import { ElMessageBox } from 'element-plus'
 import { useDownload } from '@/hooks/useDownload'
 import ExcelImportDialog from '@/components/ImportExcel/index.vue'
 // import { useDate } from '@/hooks/useDate'
+import { useRoute } from 'vue-router'
+import AssignSceneDialog from './components/AssignSceneDialog.vue'
+import AssignDeviceDialog from './components/AssignDeviceDialog.vue'
+
+const route = useRoute()
+
 // 获取 ProTable 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const proTable = ref()
 // 如果表格需要初始化请求参数，直接定义传给 ProTable(之后每次请求都会自动带上该参数，此参数更改之后也会一直带上，改变此参数会自动刷新表格数据)
-const initParam = reactive({})
+const initParam = reactive({
+  tenantId: route.params.tenantId ? Number(route.params.tenantId) : undefined,
+  type: 2
+})
 
 // dataCallback 是对于返回的表格数据做处理，如果你后台返回的数据不是 list && total 这些字段，那么你可以在这里进行处理成这些字段
 const dataCallback = (data: any) => {
   return {
     list: data.list,
+    page: data.page,
+    limit: data.limit,
     total: data.total
   }
 }
@@ -86,10 +104,8 @@ const downloadFile = async () => {
 
 // 默认不做操作就直接在 ProTable 组件上绑定	:requestApi="getUserList"
 const getTableList = (params: any) => {
-  const newParams = {
-    ...params,
-    tenantId: appstore.userInfo.tenantId
-  }
+  const newParams = { ...proTable.value.searchParam, ...params }
+  newParams.tenantId = newParams.tenantId || appstore.userInfo.tenantId
   return UserApi.page(newParams)
 }
 
@@ -152,6 +168,8 @@ const columns: ColumnProps<UserType>[] = [
 const excelDialogRef = ref()
 // 打开 drawer(新增、查看、编辑)
 const dialogRef = ref()
+const assignSceneDialogRef = ref()
+const assignDeviceDialogRef = ref()
 
 const handleImportSuccess = () => {
   proTable.value.getTableList()
@@ -165,33 +183,39 @@ const openImport = () => {
   })
 }
 
-const openDrawer = (title: string, row: Partial<UserType> = {}) => {
-  let params = {
+const openDialog = (title: string, row: Partial<UserType> = {}) => {
+  const params = {
     title,
     row: { ...row },
-    isView: title === '查看',
-    api: title === '新增' ? UserApi.add : title === '编辑' ? UserApi.edit : '',
-    getTableList: proTable.value.getTableList,
-    maxHeight: '500px'
+    isView: title.includes('查看'),
+    api: title.includes('新增') ? UserApi.add : title.includes('编辑') ? UserApi.edit : undefined,
+    getTableList: proTable.value.getTableList
   }
-  switch (title) {
-    case '新增':
-      dialogRef.value.acceptParams(params)
-      break
-    case '查看':
-      dialogRef.value.acceptParams(params)
-      break
-    case '编辑':
-      dialogRef.value.acceptParams(params)
-      break
-    default:
-      break
+  dialogRef.value.acceptParams(params)
+}
+
+// 分配场景/设备弹窗
+const openAssignDialog = (type: 'scene' | 'device', row: Partial<UserType> = {}) => {
+  const params = {
+    row: { ...row }
+  }
+  if (type === 'scene') {
+    assignSceneDialogRef.value.acceptParams(params)
+  } else {
+    assignDeviceDialogRef.value.acceptParams(params)
   }
 }
 
 // 删除用户信息
-const deleteAccount = async (params) => {
-  await useHandleData(UserApi.delete, [params.id], `删除【${params.username}】用户`)
+const deleteManager = async (params) => {
+  await useHandleData(UserApi.delete, [params.id].map(Number), `删除【${params.username}】用户`)
+  proTable.value.getTableList()
+}
+
+// * 批量删除管理员
+const batchDelete = async (ids: string[]) => {
+  await useHandleData(UserApi.delete, ids.map(Number), '删除所选用户信息')
+  proTable.value.clearSelection()
   proTable.value.getTableList()
 }
 </script>

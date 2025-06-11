@@ -20,7 +20,7 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
   let env = {} as any
   const isBuild = command === 'build'
   if (!isBuild) {
-    env = loadEnv((process.argv[3] === '--mode' ? process.argv[4] : process.argv[3]), root)
+    env = loadEnv(process.argv[3] === '--mode' ? process.argv[4] : process.argv[3], root)
   } else {
     env = loadEnv(mode, root)
   }
@@ -42,8 +42,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         include: [resolve(__dirname, 'src/locales/**')]
       }),
       createSvgIconsPlugin({
-        iconDirs: [resolve(process.cwd(), "src/assets/icons")],
-        symbolId: "icon-[dir]-[name]"
+        iconDirs: [resolve(process.cwd(), 'src/assets/icons')],
+        symbolId: 'icon-[dir]-[name]'
       }),
       viteMockServe({
         supportTs: false,
@@ -67,8 +67,8 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
           replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
         },
         {
-          find: /\@\//,
-          replacement: `${pathResolve('src')}/`
+          find: '@',
+          replacement: `${pathResolve('src')}`
         }
       ]
     },
@@ -96,10 +96,10 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
       cors: true,
       // 跨域代理配置
       proxy: {
-        "/dev": {
-          target: "http://127.0.0.1:8181",
+        '/dev': {
+          target: 'http://127.0.0.1:8181',
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/dev/, "")
+          rewrite: (path) => path.replace(/^\/dev/, '')
         }
       }
     }
