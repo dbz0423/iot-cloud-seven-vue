@@ -38,10 +38,10 @@ const assignDeviceDialogRef = ref()
 
 const columns: ColumnProps<Scene.ResSceneList>[] = [
   { type: 'selection', fixed: 'left', width: 60 },
-  { prop: 'id', label: 'id', width: 180 },
+  { prop: 'id', label: 'id' },
   { prop: 'name', label: '场景名称', search: { el: 'input' } },
-  { prop: 'createTime', label: '创建时间', width: 200 },
-  { prop: 'operation', label: '操作', fixed: 'right', width: 200 }
+  { prop: 'createTime', label: '创建时间' },
+  { prop: 'operation', label: '操作', fixed: 'right' }
 ]
 
 const deleteSceneData = async (params: Scene.ResSceneList) => {

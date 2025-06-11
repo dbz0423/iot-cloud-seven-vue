@@ -1,7 +1,7 @@
 <template>
   <div class="home card">
     <!-- <img class="home-bg" src="https://dbz0423.oss-cn-nanjing.aliyuncs.com/welcome.png" alt="welcome" /> -->
-    <iframe src="http://localhost:8181/#/" width="100%" height="100%"></iframe>
+    <iframe src="http://localhost:2025/#/" width="100%" height="100%"></iframe>
   </div>
 </template>
 
